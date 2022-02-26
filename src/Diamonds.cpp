@@ -29,9 +29,9 @@ using namespace std;
 
 const short UNUSED = 0;
 
-Dirblock::Dirblock(unsigned int magic) // Constructor
+Dirblock::Dirblock() // Constructor
 {
-	this->dirblock_s.magic = magic;
+	this->dirblock_s.magic = DIR_MAGIC_NUM;
 	this->dirblock_s.num_entries = 0;
 	for (int i = 0; i < MAX_DIR_ENTRIES; i++)
 	{
@@ -157,10 +157,10 @@ short DirblockEntry::get_block_num()
 	return this->dirblock_entry_s.block_num;
 }
 
-DataBlock::DataBlock(array<char, BLOCK_SIZE> data, short id) // Constructor
+DataBlock::DataBlock(array<char, BLOCK_SIZE> data, short id, unsigned int size_bytes) // Constructor
 {
 	this->id = id;
-	this->set_data(data);
+	this->set_data(data, size_bytes);
 }
 
 short DataBlock::get_id()
@@ -179,17 +179,26 @@ array<char, BLOCK_SIZE> DataBlock::get_data() // gets data from block
 	return data;
 }
 
-void DataBlock::set_data(array<char, BLOCK_SIZE> data)
+void DataBlock::set_data(array<char, BLOCK_SIZE> data, unsigned int size_bytes)
 {
 	for (int i = 0; i < BLOCK_SIZE; i++)
 	{
 		this->data_block_s.data[i] = data.at(i);
 	}
+
+	// Copy size_bytes AFTER copying data
+	this->size_bytes = size_bytes;
 }
 
-Inode::Inode(unsigned int magic) // Constructor
+unsigned int DataBlock::get_size_bytes()
 {
-	this->inode_s.magic = magic;
+	return this->size_bytes;
+}
+
+Inode::Inode(short id) // Constructor
+{
+	this->id = id;
+	this->inode_s.magic = INODE_MAGIC_NUM;
 	this->inode_s.size = 0;
 	for (int i = 0; i < MAX_DATA_BLOCKS; i++)
 	{
@@ -240,8 +249,8 @@ short Inode::add_block(DataBlock block)
 	// Add the block's id (index)
 	this->inode_s.blocks[this->get_size()] = block.get_id();
 
-	// Increment size AFTER adding block
-	this->inode_s.size++;
+	// Add the block's bytes to size AFTER adding block
+	this->inode_s.size += block.get_size_bytes();
 }
 
 void Inode::remove_block(int index)
@@ -261,4 +270,9 @@ void Inode::remove_block(int index)
 	{
 		this->inode_s.blocks[i] = this->inode_s.blocks[i + 1];
 	}
+}
+
+short Inode::get_id()
+{
+	return this->id;
 }

@@ -21,7 +21,7 @@ using namespace std;
 class Dirblock
 {
 public:
-	Dirblock(unsigned int magic); // Constructor
+	Dirblock(); // Constructor
 	unsigned int get_magic();			// gets magic number from dirblock_struct
 
 	unsigned int get_num_entries();
@@ -53,21 +53,23 @@ private:
 class DataBlock
 {
 public:
-	DataBlock(array<char, BLOCK_SIZE> data, short id); // Constructor
+	DataBlock(array<char, BLOCK_SIZE> data, short id, unsigned int size_bytes); // Constructor
 
 	short get_id();
 	array<char, BLOCK_SIZE> get_data(); // gets data from block
-	void set_data(array<char, BLOCK_SIZE> data);
+	void set_data(array<char, BLOCK_SIZE> data, unsigned int size_bytes);
+	unsigned int get_size_bytes();
 
 private:
 	short id;
+	unsigned int size_bytes;
 	datablock_t data_block_s;
 };
 
 class Inode
 {
 public:
-	Inode(unsigned int magic); // Constructor
+	Inode(short id); // Constructor
 	unsigned int get_magic();	 // gets magic number from inode
 	unsigned int get_size();	 // gets size from inode
 
@@ -75,7 +77,9 @@ public:
 	short get_block(int index);									// Get block at index
 	short add_block(DataBlock block);
 	void remove_block(int index);
+	short get_id();
 
 private:
+	short id;
 	inode_t inode_s;
 };
