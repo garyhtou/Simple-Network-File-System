@@ -10,6 +10,8 @@ using namespace std;
 #include "BasicFileSys.h"
 #include "Blocks.h"
 
+TODO: BST for inode table
+
 // mounts the file system
 void FileSys::mount(int sock) {
   bfs.mount();
@@ -79,3 +81,7 @@ void FileSys::stat(const char *name)
 
 // HELPER FUNCTIONS (optional)
 
+
+void addTranslate(const char *name)
+{
+}
