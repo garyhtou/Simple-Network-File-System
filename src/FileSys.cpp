@@ -19,9 +19,6 @@ void FileSys::mount(int sock)
   bfs.mount();
   curr_dir = 1;   // by default current directory is home directory, in disk block #1
   fs_sock = sock; // use this socket to receive file system operations from the client and send back response messages
-
-  // Set the WrapperFileSys's BFS instance
-  WrappedFileSys::bfs = &bfs;
 }
 
 // unmounts the file system
