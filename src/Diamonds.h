@@ -18,22 +18,6 @@ using namespace std;
 // 	superblock_t superblock_struct;
 // };
 
-class Dirblock
-{
-public:
-	Dirblock(); // Constructor
-	unsigned int get_magic();			// gets magic number from dirblock_struct
-
-	unsigned int get_num_entries();
-	array<DirblockEntry, MAX_DIR_ENTRIES> get_dirblock_entries();
-	DirblockEntry get_dirblock_entry(int index);
-	void add_dirblock_entry(DirblockEntry entry);
-	void remove_dirblock_entry(int index);
-
-private:
-	dirblock_t dirblock_s;
-};
-
 class DirblockEntry
 {
 public:
@@ -48,6 +32,22 @@ private:
 		char name[MAX_FNAME_SIZE + 1]; // file name (extra space for null)
 		short block_num;							 // block number of file (0 - unused)
 	} dirblock_entry_s;
+};
+
+class Dirblock
+{
+public:
+	Dirblock();								// Constructor
+	unsigned int get_magic(); // gets magic number from dirblock_struct
+
+	unsigned int get_num_entries();
+	array<DirblockEntry, MAX_DIR_ENTRIES> get_dirblock_entries();
+	DirblockEntry get_dirblock_entry(int index);
+	void add_dirblock_entry(DirblockEntry entry);
+	void remove_dirblock_entry(int index);
+
+private:
+	dirblock_t dirblock_s;
 };
 
 class DataBlock
@@ -69,17 +69,20 @@ private:
 class Inode
 {
 public:
-	Inode(short id); // Constructor
-	unsigned int get_magic();	 // gets magic number from inode
-	unsigned int get_size();	 // gets size from inode
+	Inode(short id, short block_id);					// Constructor
+	unsigned int get_magic(); // gets magic number from inode
+	unsigned int get_size();	// gets size from inode
 
 	array<short, MAX_DATA_BLOCKS> get_blocks(); // Get all blocks
 	short get_block(int index);									// Get block at index
 	short add_block(DataBlock block);
 	void remove_block(int index);
 	short get_id();
+	short get_block_id();
+	inode_t get_raw_struct();
 
 private:
 	short id;
+	short block_id;
 	inode_t inode_s;
 };

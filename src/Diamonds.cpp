@@ -38,6 +38,8 @@ Dirblock::Dirblock() // Constructor
 		this->dirblock_s.dir_entries[i].name[i] = '\0'; // Set to empty string
 		this->dirblock_s.dir_entries[i].block_num = UNUSED;
 	}
+
+	// TODO: Do we need to have the current and parent directory as entires?
 }
 
 unsigned int Dirblock::get_magic()
@@ -195,9 +197,10 @@ unsigned int DataBlock::get_size_bytes()
 	return this->size_bytes;
 }
 
-Inode::Inode(short id) // Constructor
+Inode::Inode(short id, short block_id) // Constructor
 {
 	this->id = id;
+	this->block_id = block_id;
 	this->inode_s.magic = INODE_MAGIC_NUM;
 	this->inode_s.size = 0;
 	for (int i = 0; i < MAX_DATA_BLOCKS; i++)
@@ -275,4 +278,14 @@ void Inode::remove_block(int index)
 short Inode::get_id()
 {
 	return this->id;
+}
+
+short Inode::get_block_id()
+{
+	return this->block_id;
+}
+
+inode_t Inode::get_raw_struct()
+{
+	return this->inode_s;
 }
