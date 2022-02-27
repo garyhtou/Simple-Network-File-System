@@ -87,6 +87,8 @@ public:
 	// IMPORTANT! You must be very careful to not use (e.g. calling member
 	// functions) this object after destroying it. Otherwise, you will edit data
 	// which no longer belongs to this block.
+	// This will only destory the block/inode that it is called on. It won't
+	// destroy the blocks which belong to the inode. You must do that!
 	void destroy()
 	{
 		// Delete block from disk
@@ -197,6 +199,8 @@ public:
 	void add_entry(DirEntry<FileInode> entry);
 	void add_entry(DirEntry<DirInode> entry);
 
+	// `remove_entry` will only remove the entry from the Dir Inode. It don't
+	// destroy the blocks associated with that Inode. You must manually do that!
 	void remove_entry(DirEntry<FileInode> entry);
 	void remove_entry(DirEntry<DirInode> entry);
 
