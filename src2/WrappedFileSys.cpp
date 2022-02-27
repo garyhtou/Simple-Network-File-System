@@ -259,19 +259,20 @@ void FileInode::remove_block(DataBlock block, unsigned int size)
 	{
 		tempRaw.blocks[i] = tempRaw.blocks[i + 1];
 	}
+	tempRaw.blocks[MAX_DATA_BLOCKS - 1] = UNUSED_ID;
 
 	// Update the size
 	tempRaw.size -= size;
 
-	// Write the temp block to disk
-	this->write_and_set_raw_block(tempRaw);
-
-	// Update the class data member AFTER updating the disk
+	// Update the class data member BEFORE updating the disk
 	this->size = tempRaw.size;
 	this->blocks.erase(remove_if(this->blocks.begin(), this->blocks.end(),
 															 [=](DataBlock block) -> bool
 															 { return block.get_id() == block_id; }),
 										 this->blocks.end());
+
+	// Write the temp block to disk
+	this->write_and_set_raw_block(tempRaw);
 }
 
 unsigned int FileInode::internal_frag_size()
@@ -363,18 +364,16 @@ vector<DirEntry<DirInode>> DirInode::get_dir_entries()
 
 void DirInode::add_entry(DirEntry<FileInode> entry)
 {
-	this->add_entry_base(entry);
-	this->file_entries.push_back(entry);
+	this->add_entry_base(entry, this->file_entries);
 }
 
 void DirInode::add_entry(DirEntry<DirInode> entry)
 {
-	this->add_entry_base(entry);
-	this->dir_entries.push_back(entry);
+	this->add_entry_base(entry, this->dir_entries);
 }
 
 template <typename T>
-void DirInode::add_entry_base(DirEntry<T> entry)
+void DirInode::add_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 {
 	// Create a temp copy of the raw block
 	dirblock_t tempRaw = this->get_raw();
@@ -406,6 +405,63 @@ void DirInode::add_entry_base(DirEntry<T> entry)
 
 	// Update the class data member AFTER updating the disk
 	this->num_entries = tempRaw.num_entries;
+}
+
+void DirInode::remove_entry(DirEntry<FileInode> entry)
+{
+	this->remove_entry_base(entry, this->file_entries);
+}
+
+void DirInode::remove_entry(DirEntry<DirInode> entry)
+{
+	this->remove_entry_base(entry, this->dir_entries);
+}
+
+template <typename T>
+void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
+{
+	short block_id = entry.get_inode().get_id();
+
+	// Create a temp copy of the raw block
+	dirblock_t tempRaw = this->get_raw();
+
+	// Find the index of the block in the blocks array
+	int index = -1;
+	for (int i = 0; i < MAX_DIR_ENTRIES; i++)
+	{
+		if (tempRaw.dir_entries[i].block_num == block_id)
+		{
+			index = i;
+			break;
+		}
+	}
+
+	// Check if the block was found (it should be)
+	if (index == -1)
+	{
+		cerr << "ERROR (DirInode::remove_entry): DirEntry for Block #" << block_id << " was not found in the Dir Inode #" << this->get_id() << "." << endl;
+		exit(1);
+	}
+
+	// Shift the block ids over (overriding the block we want to remove)
+	for (int i = index; i < MAX_DIR_ENTRIES - 1; i++)
+	{
+		tempRaw.dir_entries[i] = tempRaw.dir_entries[i + 1];
+	}
+	tempRaw.dir_entries[MAX_DIR_ENTRIES - 1].block_num = UNUSED_ID;
+
+	// Update the size
+	tempRaw.num_entries--;
+
+	// Remove from data members BEFORE removing from disk
+	this->num_entries = tempRaw.num_entries;
+	vec.erase(remove_if(vec.begin(), vec.end(),
+											[=](DirEntry<FileInode> curr_entry) -> bool
+											{ return curr_entry.get_inode().get_id() == block_id; }),
+						vec.end());
+
+	// Write the temp block to disk
+	this->write_and_set_raw_block(tempRaw);
 }
 
 // =============================================================================

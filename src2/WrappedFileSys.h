@@ -84,6 +84,15 @@ public:
 	T get_raw();
 	short get_id();
 
+	// IMPORTANT! You must be very careful to not use (e.g. calling member
+	// functions) this object after destroying it. Otherwise, you will edit data
+	// which no longer belongs to this block.
+	void destroy()
+	{
+		// Delete block from disk
+		WrappedFileSys::bfs->reclaim_block(this->get_id());
+	}
+
 protected:
 	short id; // This is the index of the block on disk
 
@@ -107,6 +116,7 @@ public:
 
 	using Block<datablock_t>::get_raw;
 	using Block<datablock_t>::get_id;
+	using Block<datablock_t>::destroy;
 
 protected:
 	// Block uses an array instead of vector because there is no way to tell the
@@ -137,6 +147,7 @@ public:
 
 	using Block<T>::get_raw;
 	using Block<T>::get_id;
+	using Block<T>::destroy;
 
 protected:
 	unsigned int magic;
@@ -186,9 +197,8 @@ public:
 	void add_entry(DirEntry<FileInode> entry);
 	void add_entry(DirEntry<DirInode> entry);
 
-	// TODO: remove_entry
-	// "rmdir" Removes a subdirectory. The subdirectory must be empty.
-	// "rm" Remove a file from the directory, reclaim all of its blocks including its inode. Cannot remove directories.
+	void remove_entry(DirEntry<FileInode> entry);
+	void remove_entry(DirEntry<DirInode> entry);
 
 protected:
 	// File and Dir Inodes are stored separately since vectors can only hold a
@@ -201,7 +211,9 @@ protected:
 
 private:
 	template <typename T>
-	void add_entry_base(DirEntry<T> entry);
+	void add_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec);
+	template <typename T>
+	void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec);
 };
 
 // =====================
@@ -225,6 +237,9 @@ public:
 
 	string get_name();
 	T get_inode();
+
+	// DirEntires have no `destroy` function. Instead, call `remove_entry` on
+	// the entry's `DirInode` object.
 
 protected:
 	string name;
