@@ -2,7 +2,7 @@ CXX := g++
 CXXFLAGS := -g -O0 -std=c++11
 
 SRC	:= BasicFileSys.cpp Disk.cpp FileSys.cpp  server.cpp Shell.cpp WrappedFileSys.cpp
-HDR	:= BasicFileSys.h  Blocks.h  Disk.h  FileSys.h  Shell.h wrappedFileSys.h
+HDR	:= BasicFileSys.h  Blocks.h  Disk.h  FileSys.h  Shell.h WrappedFileSys.h
 OBJ	:= $(patsubst %.cpp, %.o, $(SRC))
 
 all: nfsserver nfsclient

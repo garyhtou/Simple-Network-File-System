@@ -5,6 +5,9 @@
 // C-like architecture. Wrapped File System will also handle error checking
 // using custom exceptions.
 
+#ifndef WRAPPEDFILESYS_H
+#define WRAPPEDFILESYS_H
+
 #include "Blocks.h"
 #include "BasicFileSys.h"
 
@@ -14,6 +17,7 @@
 #include <string>
 #include <cstring>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -24,7 +28,7 @@ namespace WrappedFileSys
 {
 	// This BasicFileSys instance is shared by all the wrapper classes. It must be
 	// initialized before any wrapper classes are created/used.
-	BasicFileSys *bfs;
+	extern BasicFileSys *bfs;
 
 	// Custom exceptions
 	class FileSystemException : public exception
@@ -40,6 +44,22 @@ namespace WrappedFileSys
 		const char *what() const throw()
 		{
 			return "Disk full";
+		}
+	};
+
+	class FileFullException : public FileSystemException
+	{
+		const char *what() const throw()
+		{
+			return "File full";
+		}
+	};
+
+	class DirFullException : public FileSystemException
+	{
+		const char *what() const throw()
+		{
+			return "Directory full";
 		}
 	};
 };
@@ -62,6 +82,7 @@ public:
 	Block();				 // Create a new block without data
 
 	T get_raw();
+	short get_id();
 
 protected:
 	short id; // This is the index of the block on disk
@@ -83,6 +104,10 @@ public:
 
 	array<char, BLOCK_SIZE> get_data();
 	void set_data(array<char, BLOCK_SIZE> data); // vector length can't be longer than BLOCK_SIZE
+
+	using Block<datablock_t>::get_raw;
+	using Block<datablock_t>::get_id;
+
 protected:
 	// Block uses an array instead of vector because there is no way to tell the
 	// data size from the datablock_t struct (some bits of the data block may be
@@ -111,6 +136,7 @@ public:
 	bool is_file();
 
 	using Block<T>::get_raw;
+	using Block<T>::get_id;
 
 protected:
 	unsigned int magic;
@@ -127,16 +153,15 @@ public:
 
 	unsigned int get_size();
 
-	vector<Block> get_blocks();
-	void add_block(Block block);
-	void remove_block(Block block);
-	void update_block(Block block);
+	vector<DataBlock> get_blocks();
+	void add_block(DataBlock block, unsigned int size);
+	void remove_block(DataBlock block, unsigned int size);
 
 	unsigned int internal_frag_size();
 
 protected:
 	unsigned int size;
-	vector<Block> blocks;
+	vector<DataBlock> blocks;
 };
 
 // =============================================================================
@@ -144,7 +169,7 @@ protected:
 // =============================================================================
 
 // Forward declaration for `DirEntry`
-template <class T>
+template <typename T>
 class DirEntry;
 
 class DirInode : public Inode<dirblock_t>
@@ -155,8 +180,8 @@ public:
 
 	unsigned int get_num_entries();
 
-	vector<DirEntry<FileInode> > get_file_entries();
-	vector<DirEntry<DirInode> > get_dir_entries();
+	vector<DirEntry<FileInode>> get_file_entries();
+	vector<DirEntry<DirInode>> get_dir_entries();
 
 	void add_entry(DirEntry<FileInode> entry);
 	void add_entry(DirEntry<DirInode> entry);
@@ -165,10 +190,14 @@ protected:
 	// File and Dir Inodes are stored separately since vectors can only hold a
 	// single type (even if they have a common base class). This means there are
 	// also different functions for getting and adding entires.
-	vector<DirEntry<FileInode> > file_entries;
-	vector<DirEntry<DirInode> > dir_entries;
+	vector<DirEntry<FileInode>> file_entries;
+	vector<DirEntry<DirInode>> dir_entries;
 
 	unsigned int num_entries;
+
+private:
+	template <typename T>
+	void add_entry_base(DirEntry<T> entry);
 };
 
 // =====================
@@ -182,7 +211,7 @@ protected:
 //   DirInode home = DirInode(1);
 //   FileInode file = FileInode(2);
 //   DirEntry<FileInode> file_entry(home, file);
-template <class T>
+template <typename T>
 class DirEntry
 {
 	// static_assert(is_base_of<Inode<T>, T>::value, "DirEntry must be used with an Inode");
@@ -193,7 +222,9 @@ public:
 	string get_name();
 	T get_inode();
 
-private:
+protected:
 	string name;
 	T inode;
 };
+
+#endif

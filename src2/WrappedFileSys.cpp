@@ -4,6 +4,11 @@
 
 using namespace std;
 
+namespace WrappedFileSys
+{
+	BasicFileSys *bfs;
+}
+
 // =============================================================================
 // ------------------------------- BLOCK ---------------------------------------
 // =============================================================================
@@ -35,6 +40,12 @@ template <typename T>
 T Block<T>::get_raw()
 {
 	return this->raw;
+}
+
+template <typename T>
+short Block<T>::get_id()
+{
+	return this->id;
 }
 
 template <typename T>
@@ -139,7 +150,7 @@ FileInode::FileInode(short id) : Inode(id) // Retrieve an existing file inode fr
 		short block_id = this->raw.blocks[i];
 		if (block_id != UNUSED_ID)
 		{
-			this->blocks.push_back(Block(block_id));
+			this->blocks.push_back(DataBlock(block_id));
 		}
 	}
 }
@@ -162,6 +173,112 @@ FileInode::FileInode() : Inode<inode_t>() // Create a new file inode
 	this->magic = tempRaw.magic;
 	this->size = tempRaw.size;
 	// this->blocks should already be empty
+}
+
+unsigned int FileInode::get_size()
+{
+	return this->size;
+}
+
+vector<DataBlock> FileInode::get_blocks()
+{
+	return this->blocks;
+}
+
+void FileInode::add_block(DataBlock block, unsigned int size)
+{
+	// The block has already been written to the disk, so the responsiblity of
+	// this function is to provide a pointer to that block
+
+	// Check that the size is not greater than what a single block can hold
+	if (size > BLOCK_SIZE)
+	{
+		cerr << "ERROR (FileInode::add_block): DataBlock size is greater than BLOCK_SIZE." << endl;
+	}
+
+	// Create a temp copy of the raw block
+	inode_t tempRaw = this->get_raw();
+
+	// Add the block id (index) in an unused spot
+	bool written = false;
+	for (int i = 0; i < MAX_DATA_BLOCKS; i++)
+	{
+		if (tempRaw.blocks[i] != UNUSED_ID)
+		{
+			continue;
+		}
+
+		// We've found an empty spot
+		tempRaw.blocks[i] = block.get_id();
+		tempRaw.size += size;
+	}
+	if (!written)
+	{
+		// No empty spot was found
+		throw WrappedFileSys::FileFullException();
+	}
+
+	// Write the temp block to the disk
+	this->write_and_set_raw_block(tempRaw);
+
+	// Update the class data member AFTER updating the disk
+	this->blocks.push_back(block);
+	this->size = this->raw.size;
+}
+
+void FileInode::remove_block(DataBlock block, unsigned int size)
+{
+	// When removing a block, we must shift all the blocks to the left. Otherwise,
+	// file data may be returned in the wrong order.
+
+	short block_id = block.get_id();
+
+	// Create a temp copy of the raw block
+	inode_t tempRaw = this->get_raw();
+
+	// Find the index of the block in the blocks array
+	int index = -1;
+	for (int i = 0; i < MAX_DATA_BLOCKS; i++)
+	{
+		if (tempRaw.blocks[i] == block_id)
+		{
+			index = i;
+			break;
+		}
+	}
+
+	// Check if the block was found (it should be)
+	if (index == -1)
+	{
+		cerr << "ERROR (FileInode::remove_block): Block #" << block_id << " was not found in the File Inode." << endl;
+		exit(1);
+	}
+
+	// Shift the block ids over (overriding the block we want to remove)
+	for (int i = index; i < MAX_DATA_BLOCKS - 1; i++)
+	{
+		tempRaw.blocks[i] = tempRaw.blocks[i + 1];
+	}
+
+	// Update the size
+	tempRaw.size -= size;
+
+	// Write the temp block to disk
+	this->write_and_set_raw_block(tempRaw);
+
+	// Update the class data member AFTER updating the disk
+	this->size = tempRaw.size;
+	this->blocks.erase(remove_if(this->blocks.begin(), this->blocks.end(),
+															 [=](DataBlock block) -> bool
+															 { return block.get_id() == block_id; }),
+										 this->blocks.end());
+}
+
+unsigned int FileInode::internal_frag_size()
+{
+	int num_blocks = this->blocks.size();
+	unsigned int capacity = num_blocks * BLOCK_SIZE;
+	return capacity - this->size;
 }
 
 // =============================================================================
@@ -218,4 +335,97 @@ DirInode::DirInode(short id) : Inode(id) // Retrieve an existing directory inode
 
 DirInode::DirInode() : Inode() // Create a new directory inode
 {
+	// Set up data in a temporary struct
+	struct dirblock_t tempRaw;
+	tempRaw.magic = DIR_MAGIC_NUM;
+	tempRaw.num_entries = 0;
+	for (int i = 0; i < MAX_DIR_ENTRIES; i++)
+	{
+		tempRaw.dir_entries[i].block_num = UNUSED_ID;
+	}
+
+	// Write to disk and set class's raw
+	this->write_and_set_raw_block(tempRaw);
+
+	// Update the class data members AFTER updating the disk
+	this->magic = tempRaw.magic;
+	this->num_entries = tempRaw.num_entries;
+}
+
+vector<DirEntry<FileInode>> DirInode::get_file_entries()
+{
+	return this->file_entries;
+}
+vector<DirEntry<DirInode>> DirInode::get_dir_entries()
+{
+	return this->dir_entries;
+}
+
+void DirInode::add_entry(DirEntry<FileInode> entry)
+{
+	this->add_entry_base(entry);
+	this->file_entries.push_back(entry);
+}
+
+void DirInode::add_entry(DirEntry<DirInode> entry)
+{
+	this->add_entry_base(entry);
+	this->dir_entries.push_back(entry);
+}
+
+template <typename T>
+void DirInode::add_entry_base(DirEntry<T> entry)
+{
+	// Create a temp copy of the raw block
+	dirblock_t tempRaw = this->get_raw();
+
+	// Add the inode (block id) in an unused spot
+	bool written = false;
+	for (int i = 0; i < MAX_DIR_ENTRIES; i++)
+	{
+		if (tempRaw.dir_entries[i].block_num != UNUSED_ID)
+		{
+			continue;
+		}
+
+		// We've found an empty spot
+		tempRaw.dir_entries[i].block_num = entry.get_inode().get_id();
+		for (int j = 0; j < min(int(entry.get_name().size()), MAX_FNAME_SIZE + 1); j++)
+		{
+			tempRaw.dir_entries[i].name[j] = entry.get_name()[j];
+		}
+	}
+	if (!written)
+	{
+		// No empty spot was found
+		throw WrappedFileSys::DirFullException();
+	}
+
+	// Write the temp block to the disk
+	this->write_and_set_raw_block(tempRaw);
+
+	// Update the class data member AFTER updating the disk
+	this->num_entries = tempRaw.num_entries;
+}
+
+// =============================================================================
+// ------------------------------- DIR ENTRY -----------------------------------
+// =============================================================================
+template <typename T>
+DirEntry<T>::DirEntry(string name, T inode)
+{
+	this->name = name;
+	this->inode = inode;
+}
+
+template <typename T>
+string DirEntry<T>::get_name()
+{
+	return this->name;
+}
+
+template <typename T>
+T DirEntry<T>::get_inode()
+{
+	return this->inode;
 }
