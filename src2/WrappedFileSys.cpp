@@ -456,7 +456,7 @@ void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 	// Remove from data members BEFORE removing from disk
 	this->num_entries = tempRaw.num_entries;
 	vec.erase(remove_if(vec.begin(), vec.end(),
-											[=](DirEntry<FileInode> curr_entry) -> bool
+											[=](DirEntry<T> curr_entry) -> bool
 											{ return curr_entry.get_inode().get_id() == block_id; }),
 						vec.end());
 

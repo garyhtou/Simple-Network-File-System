@@ -213,7 +213,7 @@ private:
 	template <typename T>
 	void add_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec);
 	template <typename T>
-	void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec);
+	void remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec);
 };
 
 // =====================
