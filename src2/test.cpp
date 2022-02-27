@@ -25,17 +25,20 @@ void testing()
 
 void unit_tests()
 {
-	FileInode file1 = FileInode();
-	short file1_id = file1.get_id();
-	file1.destroy();
+	// Using lambdas to hide test variables within their own scope. There's
+	// probably a better way to do this
+	[]()
+	{
+		FileInode file1 = FileInode();
+		short file1_id = file1.get_id();
+		file1.destroy();
 
-	FileInode file2 = FileInode();
-	short file2_id = file2.get_id();
-	file2.destroy();
+		FileInode file2 = FileInode();
+		short file2_id = file2.get_id();
+		file2.destroy();
 
-	file1_id++;
-
-	assert(file1_id == file2_id);
+		assert(file1_id == file2_id);
+	}();
 }
 
 int main(int argc, char *argv[])
