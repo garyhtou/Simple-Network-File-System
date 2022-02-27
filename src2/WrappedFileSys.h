@@ -186,6 +186,10 @@ public:
 	void add_entry(DirEntry<FileInode> entry);
 	void add_entry(DirEntry<DirInode> entry);
 
+	// TODO: remove_entry
+	// "rmdir" Removes a subdirectory. The subdirectory must be empty.
+	// "rm" Remove a file from the directory, reclaim all of its blocks including its inode. Cannot remove directories.
+
 protected:
 	// File and Dir Inodes are stored separately since vectors can only hold a
 	// single type (even if they have a common base class). This means there are
