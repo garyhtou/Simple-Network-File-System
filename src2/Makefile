@@ -17,3 +17,10 @@ nfsclient: Shell.o client.o
 
 clean:
 	rm -f nfsserver nfsclient *.o DISK
+
+
+# FOR TESTING
+TESTOBJ := $(subst server.o,,$(OBJ)) test.cpp
+test: $(TESTOBJ)
+	$(CXX) -o $@ $(TESTOBJ)
+	rm -f DISK

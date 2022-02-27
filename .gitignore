@@ -4,3 +4,6 @@
 nfsclient
 nfsserver
 *.o
+DISK
+
+test
