@@ -41,6 +41,7 @@ void unit_tests()
 	}();
 }
 
+// Command for running tests: `make clean; make test && ./test`
 int main(int argc, char *argv[])
 {
 	FileSys fs;
