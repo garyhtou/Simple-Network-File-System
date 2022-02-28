@@ -36,8 +36,8 @@ void FileSys::mkdir(const char *name)
  
   //create directroy block
 
-  Block<dirblock_t> B = Block(); 
-  B.write_and_set_raw_block(B.get_raw());
+  Block<dirblock_t> d_block = Block(); 
+  d_block.write_and_set_raw_block(d_block.get_raw());
 
   // create directory inode
   DirInode dir_node = new DirInode();
@@ -54,7 +54,7 @@ void FileSys::cd(const char *name)
   //retreive current directory
   Block curr = Block(curr_dir);
 
-  //search curr until entry name match
+  //search curr block until entry name match
 
     //if match
 
@@ -73,6 +73,13 @@ void FileSys::home()
 // remove a directory
 void FileSys::rmdir(const char *name)
 { 
+  //search current block until name match
+    //if match
+      //read block
+    
+    //check if block is empty
+
+
 
 }
 
@@ -111,6 +118,22 @@ void FileSys::rm(const char *name)
 // display stats about file or directory
 void FileSys::stat(const char *name)
 {
+    //get current dir_block
+
+    //read block
+
+    //search directory until name found
+      //if found read and print
+        //print file name
+        
+        //print block
+
+        // 
 }
 
 // HELPER FUNCTIONS (optional)
+
+//should probably have a funtion that loops
+//through directory given a name (array of chars) unitl
+// a file or directory with the given name is found
+
