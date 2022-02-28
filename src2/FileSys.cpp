@@ -33,21 +33,47 @@ void FileSys::unmount()
 // make a directory
 void FileSys::mkdir(const char *name)
 {
+ 
+  //create directroy block
+
+  Block<dirblock_t> B = Block(); 
+  B.write_and_set_raw_block(B.get_raw());
+
+  // create directory inode
+  DirInode dir_node = new DirInode();
+
+  
+  //instantiate list that will contain user-readable name lowlevel 
+  //name pairs for files in directory
+
 }
 
 // switch to a directory
 void FileSys::cd(const char *name)
-{
+{ 
+  //retreive current directory
+  Block curr = Block(curr_dir);
+
+  //search curr until entry name match
+
+    //if match
+
+      //change curr_id to id at loop
+
+
+
 }
 
 // switch to home directory
 void FileSys::home()
 {
+  //change curr_dir to 1
 }
 
 // remove a directory
 void FileSys::rmdir(const char *name)
-{
+{ 
+
 }
 
 // list the contents of current directory
@@ -63,6 +89,8 @@ void FileSys::create(const char *name)
 // append data to a data file
 void FileSys::append(const char *name, const char *data)
 {
+  //navigate get file
+  // 
 }
 
 // display the contents of a data file
