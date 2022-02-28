@@ -35,6 +35,9 @@ Block<T>::Block() // Create a new block without data
 
 	// Set block id
 	this->id = id;
+
+	// It's the subclasses' responsibility to clear/intialize the block and write
+	// it back to memory.
 }
 
 template <typename T>
