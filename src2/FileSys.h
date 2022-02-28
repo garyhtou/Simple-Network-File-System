@@ -51,6 +51,7 @@ public:
   // display stats about file or directory
   void stat(const char *name);
 
+
 private:
   BasicFileSys bfs; // basic file system
   short curr_dir;   // current directory
