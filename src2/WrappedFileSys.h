@@ -103,7 +103,7 @@ namespace WrappedFileSys
 		inline static const int CODE = 502;
 		inline static const string MESSAGE = "File exists";
 	};
-	class FileDoesNotExistException : public FileSystemException
+	class FileNotFoundException : public FileSystemException
 	{
 		// Applies to: cd, rmdir, cat, head, append, rm, stat
 		inline static const int CODE = 503;

@@ -55,24 +55,43 @@ void FileSys::mkdir(const char *name)
 // switch to a directory
 // Should raise 500, 503
 void FileSys::cd(const char *name)
-{ 
-  //retreive current directory
-  Block curr = Block(curr_dir);
+{
+  string dir_name = name;
 
-  //search curr until entry name match
+  // Retreive working directory
+  DirInode working_dir = this->get_working_dir();
 
-    //if match
+  // Search directory until entry name match
+  for (DirEntry<DirInode> dir : working_dir.get_dir_entries())
+  {
+    if (dir.get_name() == name)
+    {
+      // Found the directory
+      this->set_working_dir(dir.get_inode());
+      // TODO: do we need to return something to the socket?
+      return;
+    }
+  }
 
-      //change curr_id to id at loop
+  // Directory was not found, see if the name is of a file
+  for (DirEntry<FileInode> dir : working_dir.get_file_entries())
+  {
+    if (dir.get_name() == name)
+    {
+      // Found a file with this name
+      throw WrappedFileSys::NotADirException();
+    }
+  }
 
-
-
+  // There was no directory or file with this name
+  throw WrappedFileSys::FileNotFoundException();
 }
 
 // switch to home directory
 void FileSys::home()
 {
   this->set_working_dir(DirInode(HOME_DIR_ID));
+  // TODO: 200 code message
 }
 
 // remove a directory
