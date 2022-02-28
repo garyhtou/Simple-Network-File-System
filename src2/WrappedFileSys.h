@@ -22,7 +22,7 @@
 using namespace std;
 
 const short UNUSED_ID = 0;
-const short DISK_FULL_BLOCK_ID = 0;
+const short HOME_DIR_ID = 1;
 
 namespace WrappedFileSys
 {

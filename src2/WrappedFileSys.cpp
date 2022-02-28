@@ -26,8 +26,9 @@ Block<T>::Block() // Create a new block without data
 	// Find a free block
 	short id = WrappedFileSys::bfs->get_free_block();
 
-	// Check return value of get_free_block
-	if (id == DISK_FULL_BLOCK_ID)
+	// Check return value of get_free_block. A return value of 0 means the disk
+	// is full.
+	if (id == 0)
 	{
 		throw WrappedFileSys::DiskFullException();
 	}
@@ -163,7 +164,7 @@ FileInode::FileInode() : Inode<inode_t>() // Create a new file inode
 	tempRaw.size = 0;
 	for (int i = 0; i < MAX_DATA_BLOCKS; i++)
 	{
-		tempRaw.blocks[i] = 0;
+		tempRaw.blocks[i] = UNUSED_ID;
 	}
 
 	// Write to disk and set class's raw

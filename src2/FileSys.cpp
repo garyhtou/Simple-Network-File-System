@@ -21,6 +21,9 @@ void FileSys::mount(int sock)
 
   // Set the WrapperFileSys's BFS instance
   WrappedFileSys::bfs = &bfs;
+
+  // Default working directory to Home Directory
+  this->set_working_dir(DirInode(HOME_DIR_ID));
 }
 
 // unmounts the file system
@@ -114,3 +117,11 @@ void FileSys::stat(const char *name)
 }
 
 // HELPER FUNCTIONS (optional)
+void FileSys::set_working_dir(DirInode dir)
+{
+  this->curr_dir = dir.get_id();
+}
+DirInode FileSys::get_working_dir()
+{
+  return DirInode(this->curr_dir);
+}
