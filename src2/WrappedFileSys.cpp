@@ -362,6 +362,11 @@ DirInode::DirInode() : Inode() // Create a new directory inode
 	this->num_entries = tempRaw.num_entries;
 }
 
+unsigned int DirInode::get_num_entries()
+{
+	return this->num_entries;
+}
+
 vector<DirEntry<FileInode>> DirInode::get_file_entries()
 {
 	return this->file_entries;

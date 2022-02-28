@@ -37,19 +37,44 @@ void FileSys::unmount()
 // Should raise 502, 504, 505, 506
 void FileSys::mkdir(const char *name)
 {
- 
-  //create directroy block
+  string dir_name = name;
+  DirInode working_dir = this->get_working_dir();
 
-  Block<dirblock_t> B = Block(); 
-  B.write_and_set_raw_block(B.get_raw());
+  // Check if a directory or file under this name already exists
+  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
+  {
+    if (entry.get_name() == dir_name)
+    {
+      throw WrappedFileSys::FileExistsException();
+    }
+  }
+  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
+  {
+    if (entry.get_name() == dir_name)
+    {
+      throw WrappedFileSys::FileExistsException();
+    }
+  }
 
-  // create directory inode
-  DirInode dir_node = new DirInode();
+  // Check if the given name is too long
+  if (dir_name.size() > MAX_FNAME_SIZE)
+  {
+    throw WrappedFileSys::FileNameTooLongException();
+  }
 
-  
-  //instantiate list that will contain user-readable name lowlevel 
-  //name pairs for files in directory
+  // Check if the directory has an empty space for a new entry.
+  if (!working_dir.has_free_entry())
+  {
+    throw WrappedFileSys::DirFullException();
+  }
 
+  // Attempt to create a block for this new directory
+  DirInode new_dir = DirInode(); // May throw WrappedFileSys::DiskFullException();
+
+  // Add the new DirNode as an entry to the current working directory
+  DirEntry<DirInode> entry = DirEntry<DirInode>(dir_name, new_dir);
+  working_dir.add_entry(entry);
+  // TODO: 200?
 }
 
 // switch to a directory
@@ -62,21 +87,21 @@ void FileSys::cd(const char *name)
   DirInode working_dir = this->get_working_dir();
 
   // Search directory until entry name match
-  for (DirEntry<DirInode> dir : working_dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
   {
-    if (dir.get_name() == name)
+    if (entry.get_name() == name)
     {
       // Found the directory
-      this->set_working_dir(dir.get_inode());
+      this->set_working_dir(entry.get_inode());
       // TODO: do we need to return something to the socket?
       return;
     }
   }
 
   // Directory was not found, see if the name is of a file
-  for (DirEntry<FileInode> dir : working_dir.get_file_entries())
+  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
   {
-    if (dir.get_name() == name)
+    if (entry.get_name() == name)
     {
       // Found a file with this name
       throw WrappedFileSys::NotADirException();
