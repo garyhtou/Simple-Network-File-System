@@ -33,34 +33,70 @@ namespace WrappedFileSys
 	// Custom exceptions
 	class FileSystemException : public exception
 	{
+	public:
 		const char *what() const throw()
 		{
-			return "File system error";
+			return (to_string(CODE) + " " + MESSAGE).c_str();
 		}
+
+	private:
+		inline static const int CODE = 0;
+		inline static const string MESSAGE = "";
 	};
 
+	class NotADirException : public FileSystemException
+	{
+		// Applies to: cd, rmdir
+		inline static const int CODE = 500;
+		inline static const string MESSAGE = "File is not a directory";
+	};
+	class NotAFileException : public FileSystemException
+	{
+		// Applies to: cat, head, append, rm
+		inline static const int CODE = 501;
+		inline static const string MESSAGE = "File is a directory";
+	};
+	class FileExistsException : public FileSystemException
+	{
+		// Applies to: create, mkdir
+		inline static const int CODE = 502;
+		inline static const string MESSAGE = "File exists";
+	};
+	class FileDoesNotExistException : public FileSystemException
+	{
+		// Applies to: cd, rmdir, cat, head, append, rm, stat
+		inline static const int CODE = 503;
+		inline static const string MESSAGE = "File does not exist";
+	};
+	class FileNameTooLongException : public FileSystemException
+	{
+		// Applies to: create, mkdir
+		inline static const int CODE = 504;
+		inline static const string MESSAGE = "File name is too long";
+	};
 	class DiskFullException : public FileSystemException
 	{
-		const char *what() const throw()
-		{
-			return "Disk full";
-		}
+		// Applies to: create, mkdir, append
+		inline static const int CODE = 505;
+		inline static const string MESSAGE = "Disk is full";
 	};
-
-	class FileFullException : public FileSystemException
-	{
-		const char *what() const throw()
-		{
-			return "File full";
-		}
-	};
-
 	class DirFullException : public FileSystemException
 	{
-		const char *what() const throw()
-		{
-			return "Directory full";
-		}
+		// Applies to: create, mkdir
+		inline static const int CODE = 506;
+		inline static const string MESSAGE = "Directory is full";
+	};
+	class DirNotEmptyException : public FileSystemException
+	{
+		// Applies to: rmdir
+		inline static const int CODE = 507;
+		inline static const string MESSAGE = "Directory is not empty";
+	};
+	class FileFullException : public FileSystemException
+	{
+		// Applies to: append
+		inline static const int CODE = 508;
+		inline static const string MESSAGE = "Append exceeds maximum file size";
 	};
 };
 
