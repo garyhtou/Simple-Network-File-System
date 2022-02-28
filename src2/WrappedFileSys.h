@@ -30,7 +30,9 @@ namespace WrappedFileSys
 	// initialized before any wrapper classes are created/used.
 	extern BasicFileSys *bfs;
 
-	// Custom exceptions
+	// ===========================================================================
+	// -------------------------- CUSTOM EXCEPTIONS ------------------------------
+	// ===========================================================================
 	class FileSystemException : public exception
 	{
 	public:
@@ -206,6 +208,7 @@ public:
 	void add_block(DataBlock block, unsigned int size);
 	void remove_block(DataBlock block, unsigned int size);
 
+	bool has_free_block();
 	unsigned int internal_frag_size();
 
 protected:
@@ -239,6 +242,8 @@ public:
 	// destroy the blocks associated with that Inode. You must manually do that!
 	void remove_entry(DirEntry<FileInode> entry);
 	void remove_entry(DirEntry<DirInode> entry);
+
+	bool has_free_entry();
 
 protected:
 	// File and Dir Inodes are stored separately since vectors can only hold a

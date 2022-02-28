@@ -279,6 +279,11 @@ void FileInode::remove_block(DataBlock block, unsigned int size)
 	this->write_and_set_raw_block(tempRaw);
 }
 
+bool FileInode::has_free_block()
+{
+	return MAX_DATA_BLOCKS - this->blocks.size() > 0;
+}
+
 unsigned int FileInode::internal_frag_size()
 {
 	int num_blocks = this->blocks.size();
@@ -466,6 +471,11 @@ void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 
 	// Write the temp block to disk
 	this->write_and_set_raw_block(tempRaw);
+}
+
+bool DirInode::has_free_entry()
+{
+	return MAX_DIR_ENTRIES - this->get_num_entries() > 0;
 }
 
 // =============================================================================
