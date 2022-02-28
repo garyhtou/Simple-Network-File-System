@@ -5,6 +5,45 @@
 // C-like architecture. Wrapped File System will also handle error checking
 // using custom exceptions.
 
+// =============================================================================
+// ----------------------------- CLASS DIAGRAM ---------------------------------
+// =============================================================================
+//
+//   Classes that are labeled         +--------------+
+//   as ABSTRACT shouldn't be         |              |
+//   used directly. Although,         |   Block<T>   |
+//   you can use Inode<T> to          |   ABSTRACT   |
+//   check the type of a Inode        |              |
+//   (File or Dir).                   +------^-------+
+//                                           |
+//                           +---------------+-------------+
+//                           |                             |
+//                           |                      +------+-------+
+//                           |                      |              |
+//                           |                      |   Inode<T>   |
+//                           |                      |   ABSTRACT   |
+//                           |                      |              |
+//                           |                      +------^-------+
+//                           |                             |
+//                           |                    +--------+---------+
+//                           |                    |                  |
+//                   +-------+------+     +-------+------+    +------+-------+
+//                   |              |     |              |    |              |
+// TYPES OF BLOCKS:  |  DataBlock   |     |   FileInode  |    |   DirInode   |
+//                   |              |     |              |    |              |
+//                   +--------------+     +--------------+    +--------------+
+//
+//
+//    DirEntry is a class generic          +-----------------+
+//    (template) which takes in            |                 |
+//    either a FileInode or                |   DirEntry<T>   |
+//    DirInode.                            |                 |
+//                                         +-----------------+
+//    These entries can be added
+//    to a DirInode using                  EXAMPLE:
+//    DirInode::add_entry();               DirEntry<FileInode>
+//                                         DirEntry<DirInode>
+
 #ifndef WRAPPEDFILESYS_H
 #define WRAPPEDFILESYS_H
 
