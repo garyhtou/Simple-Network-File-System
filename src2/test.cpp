@@ -37,6 +37,12 @@ void unit_tests()
 		short file2_id = file2.get_id();
 		file2.destroy();
 
+		// =============================== TEST ====================================
+		// Be sure that rmdir and rm actually reclaim blocks that are part of the
+		// deleted directory or file.  This can be tested for by removing a file,
+		// creating a new file, and running stat on that new file to see if the
+		// block is indeed reused. This test is possible since get_free_block
+		// deterministically returns the free block with the lowest number.
 		assert(file1_id == file2_id);
 	}();
 }

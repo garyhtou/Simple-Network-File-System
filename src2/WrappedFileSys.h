@@ -5,6 +5,45 @@
 // C-like architecture. Wrapped File System will also handle error checking
 // using custom exceptions.
 
+// =============================================================================
+// ----------------------------- CLASS DIAGRAM ---------------------------------
+// =============================================================================
+//
+//    Classes that are labeled         +--------------+
+//    as ABSTRACT shouldn't be         |              |
+//    used directly. Although,         |   Block<T>   |
+//    you can use Inode<T> to          |   ABSTRACT   |
+//    check the type of a Inode        |              |
+//    (File or Dir).                   +------^-------+
+//                                            |
+//                            +---------------+-------------+
+//                            |                             |
+//                            |                      +------+-------+
+//                            |                      |              |
+//                            |                      |   Inode<T>   |
+//                            |                      |   ABSTRACT   |
+//                            |                      |              |
+//                            |                      +------^-------+
+//                            |                             |
+//                            |                    +--------+---------+
+//                            |                    |                  |
+//                    +-------+------+     +-------+------+    +------+-------+
+//                    |              |     |              |    |              |
+//  TYPES OF BLOCKS:  |  DataBlock   |     |   FileInode  |    |   DirInode   |
+//                    |              |     |              |    |              |
+//                    +--------------+     +--------------+    +--------------+
+//
+//
+//     DirEntry is a class generic          +-----------------+
+//     (template) which takes in            |                 |
+//     either a FileInode or                |   DirEntry<T>   |
+//     DirInode.                            |                 |
+//                                          +-----------------+
+//     These entries can be added
+//     to a DirInode using                  EXAMPLE:
+//     DirInode::add_entry();               DirEntry<FileInode>
+//                                          DirEntry<DirInode>
+
 #ifndef WRAPPEDFILESYS_H
 #define WRAPPEDFILESYS_H
 
@@ -22,7 +61,7 @@
 using namespace std;
 
 const short UNUSED_ID = 0;
-const short DISK_FULL_BLOCK_ID = 0;
+const short HOME_DIR_ID = 1;
 
 namespace WrappedFileSys
 {
@@ -30,37 +69,75 @@ namespace WrappedFileSys
 	// initialized before any wrapper classes are created/used.
 	extern BasicFileSys *bfs;
 
-	// Custom exceptions
+	// ===========================================================================
+	// -------------------------- CUSTOM EXCEPTIONS ------------------------------
+	// ===========================================================================
 	class FileSystemException : public exception
 	{
+	public:
 		const char *what() const throw()
 		{
-			return "File system error";
+			return (to_string(CODE) + " " + MESSAGE).c_str();
 		}
+
+	private:
+		inline static const int CODE = 0;
+		inline static const string MESSAGE = "";
 	};
 
+	class NotADirException : public FileSystemException
+	{
+		// Applies to: cd, rmdir
+		inline static const int CODE = 500;
+		inline static const string MESSAGE = "File is not a directory";
+	};
+	class NotAFileException : public FileSystemException
+	{
+		// Applies to: cat, head, append, rm
+		inline static const int CODE = 501;
+		inline static const string MESSAGE = "File is a directory";
+	};
+	class FileExistsException : public FileSystemException
+	{
+		// Applies to: create, mkdir
+		inline static const int CODE = 502;
+		inline static const string MESSAGE = "File exists";
+	};
+	class FileNotFoundException : public FileSystemException
+	{
+		// Applies to: cd, rmdir, cat, head, append, rm, stat
+		inline static const int CODE = 503;
+		inline static const string MESSAGE = "File does not exist";
+	};
+	class FileNameTooLongException : public FileSystemException
+	{
+		// Applies to: create, mkdir
+		inline static const int CODE = 504;
+		inline static const string MESSAGE = "File name is too long";
+	};
 	class DiskFullException : public FileSystemException
 	{
-		const char *what() const throw()
-		{
-			return "Disk full";
-		}
+		// Applies to: create, mkdir, append
+		inline static const int CODE = 505;
+		inline static const string MESSAGE = "Disk is full";
 	};
-
-	class FileFullException : public FileSystemException
-	{
-		const char *what() const throw()
-		{
-			return "File full";
-		}
-	};
-
 	class DirFullException : public FileSystemException
 	{
-		const char *what() const throw()
-		{
-			return "Directory full";
-		}
+		// Applies to: create, mkdir
+		inline static const int CODE = 506;
+		inline static const string MESSAGE = "Directory is full";
+	};
+	class DirNotEmptyException : public FileSystemException
+	{
+		// Applies to: rmdir
+		inline static const int CODE = 507;
+		inline static const string MESSAGE = "Directory is not empty";
+	};
+	class FileFullException : public FileSystemException
+	{
+		// Applies to: append
+		inline static const int CODE = 508;
+		inline static const string MESSAGE = "Append exceeds maximum file size";
 	};
 };
 
@@ -170,6 +247,7 @@ public:
 	void add_block(DataBlock block, unsigned int size);
 	void remove_block(DataBlock block, unsigned int size);
 
+	bool has_free_block();
 	unsigned int internal_frag_size();
 
 protected:
@@ -203,6 +281,8 @@ public:
 	// destroy the blocks associated with that Inode. You must manually do that!
 	void remove_entry(DirEntry<FileInode> entry);
 	void remove_entry(DirEntry<DirInode> entry);
+
+	bool has_free_entry();
 
 protected:
 	// File and Dir Inodes are stored separately since vectors can only hold a

@@ -6,55 +6,61 @@
 
 #include "BasicFileSys.h"
 
-class FileSys {
-  
-  public:
-    // mounts the file system
-    void mount(int sock);
+#include "WrappedFileSys.h"
 
-    // unmounts the file system
-    void unmount();
+class FileSys
+{
 
-    // make a directory
-    void mkdir(const char *name);
+public:
+  // mounts the file system
+  void mount(int sock);
 
-    // switch to a directory
-    void cd(const char *name);
-    
-    // switch to home directory
-    void home();
-    
-    // remove a directory
-    void rmdir(const char *name);
+  // unmounts the file system
+  void unmount();
 
-    // list the contents of current directory
-    void ls();
+  // make a directory
+  void mkdir(const char *name);
 
-    // create an empty data file
-    void create(const char *name);
+  // switch to a directory
+  void cd(const char *name);
 
-    // append data to a data file
-    void append(const char *name, const char *data);
+  // switch to home directory
+  void home();
 
-    // display the contents of a data file
-    void cat(const char *name);
+  // remove a directory
+  void rmdir(const char *name);
 
-    // display the first N bytes of the file
-    void head(const char *name, unsigned int n);
+  // list the contents of current directory
+  void ls();
 
-    // delete a data file
-    void rm(const char *name);
+  // create an empty data file
+  void create(const char *name);
 
-    // display stats about file or directory
-    void stat(const char *name);
+  // append data to a data file
+  void append(const char *name, const char *data);
 
-  private:
-    BasicFileSys bfs;	// basic file system
-    short curr_dir;	// current directory
+  // display the contents of a data file
+  void cat(const char *name);
 
-    int fs_sock;  // file server socket
+  // display the first N bytes of the file
+  void head(const char *name, unsigned int n);
 
-    // Additional private variables and Helper functions - if desired
+  // delete a data file
+  void rm(const char *name);
+
+  // display stats about file or directory
+  void stat(const char *name);
+
+private:
+  BasicFileSys bfs; // basic file system
+  short curr_dir;   // current directory
+
+  int fs_sock; // file server socket
+
+  // Additional private variables and Helper functions - if desired
+
+  void set_working_dir(DirInode dir);
+  DirInode get_working_dir();
 };
 
-#endif 
+#endif

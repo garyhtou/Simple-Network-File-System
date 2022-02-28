@@ -26,14 +26,18 @@ Block<T>::Block() // Create a new block without data
 	// Find a free block
 	short id = WrappedFileSys::bfs->get_free_block();
 
-	// Check return value of get_free_block
-	if (id == DISK_FULL_BLOCK_ID)
+	// Check return value of get_free_block. A return value of 0 means the disk
+	// is full.
+	if (id == 0)
 	{
 		throw WrappedFileSys::DiskFullException();
 	}
 
 	// Set block id
 	this->id = id;
+
+	// It's the subclasses' responsibility to clear/intialize the block and write
+	// it back to memory.
 }
 
 template <typename T>
@@ -163,7 +167,7 @@ FileInode::FileInode() : Inode<inode_t>() // Create a new file inode
 	tempRaw.size = 0;
 	for (int i = 0; i < MAX_DATA_BLOCKS; i++)
 	{
-		tempRaw.blocks[i] = 0;
+		tempRaw.blocks[i] = UNUSED_ID;
 	}
 
 	// Write to disk and set class's raw
@@ -275,6 +279,11 @@ void FileInode::remove_block(DataBlock block, unsigned int size)
 	this->write_and_set_raw_block(tempRaw);
 }
 
+bool FileInode::has_free_block()
+{
+	return MAX_DATA_BLOCKS - this->blocks.size() > 0;
+}
+
 unsigned int FileInode::internal_frag_size()
 {
 	int num_blocks = this->blocks.size();
@@ -351,6 +360,11 @@ DirInode::DirInode() : Inode() // Create a new directory inode
 	// Update the class data members AFTER updating the disk
 	this->magic = tempRaw.magic;
 	this->num_entries = tempRaw.num_entries;
+}
+
+unsigned int DirInode::get_num_entries()
+{
+	return this->num_entries;
 }
 
 vector<DirEntry<FileInode>> DirInode::get_file_entries()
@@ -462,6 +476,11 @@ void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 
 	// Write the temp block to disk
 	this->write_and_set_raw_block(tempRaw);
+}
+
+bool DirInode::has_free_entry()
+{
+	return MAX_DIR_ENTRIES - this->get_num_entries() > 0;
 }
 
 // =============================================================================
