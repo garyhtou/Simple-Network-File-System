@@ -34,6 +34,7 @@ void FileSys::unmount()
 }
 
 // make a directory
+// Should raise 502, 504, 505, 506
 void FileSys::mkdir(const char *name)
 {
  
@@ -52,6 +53,7 @@ void FileSys::mkdir(const char *name)
 }
 
 // switch to a directory
+// Should raise 500, 503
 void FileSys::cd(const char *name)
 { 
   //retreive current directory
@@ -74,9 +76,9 @@ void FileSys::home()
 }
 
 // remove a directory
+// Should raise 500, 503, 507
 void FileSys::rmdir(const char *name)
 { 
-
 }
 
 // list the contents of current directory
@@ -85,11 +87,13 @@ void FileSys::ls()
 }
 
 // create an empty data file
+// Should raise 502, 504, 505, 506
 void FileSys::create(const char *name)
 {
 }
 
 // append data to a data file
+// Should raise 501, 503, 505, 508
 void FileSys::append(const char *name, const char *data)
 {
   //navigate get file
@@ -97,21 +101,25 @@ void FileSys::append(const char *name, const char *data)
 }
 
 // display the contents of a data file
+// Should raise 501, 503
 void FileSys::cat(const char *name)
 {
 }
 
 // display the first N bytes of the file
+// Should raise 501, 503
 void FileSys::head(const char *name, unsigned int n)
 {
 }
 
 // delete a data file
+// Should raise 501, 503
 void FileSys::rm(const char *name)
 {
 }
 
 // display stats about file or directory
+// Should raise 503
 void FileSys::stat(const char *name)
 {
 }
