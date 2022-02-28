@@ -23,7 +23,7 @@ void FileSys::mount(int sock)
   WrappedFileSys::bfs = &bfs;
 
   // Default working directory to Home Directory
-  this->set_working_dir(DirInode(HOME_DIR_ID));
+  this->home();
 }
 
 // unmounts the file system
@@ -72,7 +72,7 @@ void FileSys::cd(const char *name)
 // switch to home directory
 void FileSys::home()
 {
-  //change curr_dir to 1
+  this->set_working_dir(DirInode(HOME_DIR_ID));
 }
 
 // remove a directory
