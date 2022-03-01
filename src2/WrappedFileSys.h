@@ -74,11 +74,6 @@ namespace WrappedFileSys
 	// ===========================================================================
 	class FileSystemException : public exception
 	{
-	public:
-		const char *what() const throw()
-		{
-			return "File System Error";
-		}
 	};
 	class NotADirException : public FileSystemException
 	{
