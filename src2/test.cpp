@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 	FileSys fs;
 	fs.mount(1); // Giving it a bogus sock int for now
 
-	// testing();
+	testing();
 
 	unit_tests();
 

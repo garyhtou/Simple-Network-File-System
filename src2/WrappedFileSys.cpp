@@ -491,6 +491,12 @@ DirEntry<T>::DirEntry(string name, T inode)
 {
 	this->name = name;
 	this->inode = inode;
+
+	// Check if the given name is too long
+	if (name.size() > MAX_FNAME_SIZE)
+	{
+		throw WrappedFileSys::FileNameTooLongException();
+	}
 }
 
 template <typename T>
