@@ -77,6 +77,7 @@ namespace WrappedFileSys
 	};
 	class NotADirException : public FileSystemException
 	{
+	public:
 		// Applies to: cd, rmdir
 		const char *what() const throw()
 		{
@@ -85,6 +86,7 @@ namespace WrappedFileSys
 	};
 	class NotAFileException : public FileSystemException
 	{
+	public:
 		// Applies to: cat, head, append, rm
 		const char *what() const throw()
 		{
@@ -93,6 +95,7 @@ namespace WrappedFileSys
 	};
 	class FileExistsException : public FileSystemException
 	{
+	public:
 		// Applies to: create, mkdir
 		const char *what() const throw()
 		{
@@ -101,6 +104,7 @@ namespace WrappedFileSys
 	};
 	class FileNotFoundException : public FileSystemException
 	{
+	public:
 		// Applies to: cd, rmdir, cat, head, append, rm, stat
 		const char *what() const throw()
 		{
@@ -109,6 +113,7 @@ namespace WrappedFileSys
 	};
 	class FileNameTooLongException : public FileSystemException
 	{
+	public:
 		// Applies to: create, mkdir
 		const char *what() const throw()
 		{
@@ -117,6 +122,7 @@ namespace WrappedFileSys
 	};
 	class DiskFullException : public FileSystemException
 	{
+	public:
 		// Applies to: create, mkdir, append
 		const char *what() const throw()
 		{
@@ -125,6 +131,7 @@ namespace WrappedFileSys
 	};
 	class DirFullException : public FileSystemException
 	{
+	public:
 		// Applies to: create, mkdir
 		const char *what() const throw()
 		{
@@ -133,6 +140,7 @@ namespace WrappedFileSys
 	};
 	class DirNotEmptyException : public FileSystemException
 	{
+	public:
 		// Applies to: rmdir
 		const char *what() const throw()
 		{
@@ -141,67 +149,13 @@ namespace WrappedFileSys
 	};
 	class FileFullException : public FileSystemException
 	{
+	public:
 		// Applies to: append
 		const char *what() const throw()
 		{
 			return "508 Append exceeds maximum file size";
 		}
 	};
-
-	// class NotADirException : public FileSystemException
-	// {
-	// 	// Applies to: cd, rmdir
-	// 	inline static const int CODE = 500;
-	// 	inline static const string MESSAGE = "File is not a directory";
-	// };
-	// class NotAFileException : public FileSystemException
-	// {
-	// 	// Applies to: cat, head, append, rm
-	// 	inline static const int CODE = 501;
-	// 	inline static const string MESSAGE = "File is a directory";
-	// };
-	// class FileExistsException : public FileSystemException
-	// {
-	// 	// Applies to: create, mkdir
-	// 	inline static const int CODE = 502;
-	// 	inline static const string MESSAGE = "File exists";
-	// };
-	// class FileNotFoundException : public FileSystemException
-	// {
-	// 	// Applies to: cd, rmdir, cat, head, append, rm, stat
-	// 	inline static const int CODE = 503;
-	// 	inline static const string MESSAGE = "File does not exist";
-	// };
-	// class FileNameTooLongException : public FileSystemException
-	// {
-	// 	// Applies to: create, mkdir
-	// 	inline static const int CODE = 504;
-	// 	inline static const string MESSAGE = "File name is too long";
-	// };
-	// class DiskFullException : public FileSystemException
-	// {
-	// 	// Applies to: create, mkdir, append
-	// 	inline static const int CODE = 505;
-	// 	inline static const string MESSAGE = "Disk is full";
-	// };
-	// class DirFullException : public FileSystemException
-	// {
-	// 	// Applies to: create, mkdir
-	// 	inline static const int CODE = 506;
-	// 	inline static const string MESSAGE = "Directory is full";
-	// };
-	// class DirNotEmptyException : public FileSystemException
-	// {
-	// 	// Applies to: rmdir
-	// 	inline static const int CODE = 507;
-	// 	inline static const string MESSAGE = "Directory is not empty";
-	// };
-	// class FileFullException : public FileSystemException
-	// {
-	// 	// Applies to: append
-	// 	inline static const int CODE = 508;
-	// 	inline static const string MESSAGE = "Append exceeds maximum file size";
-	// };
 };
 
 // =============================================================================

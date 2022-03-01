@@ -89,7 +89,7 @@ void DataBlock::set_data(array<char, BLOCK_SIZE> data) // vector length can't be
 	struct datablock_t tempRaw;
 	for (int i = 0; i < data.size(); i++)
 	{
-		tempRaw.data[i] = this->data[i];
+		tempRaw.data[i] = data[i];
 	}
 
 	// Write to disk and set class's raw
@@ -215,6 +215,8 @@ void FileInode::add_block(DataBlock block, unsigned int size)
 		// We've found an empty spot
 		tempRaw.blocks[i] = block.get_id();
 		tempRaw.size += size;
+		written = true;
+		break;
 	}
 	if (!written)
 	{
@@ -402,11 +404,19 @@ void DirInode::add_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 		}
 
 		// We've found an empty spot
+		// Copy block num
 		tempRaw.dir_entries[i].block_num = entry.get_inode().get_id();
-		for (int j = 0; j < min(int(entry.get_name().size()), MAX_FNAME_SIZE + 1); j++)
+
+		// Copy name
+		int name_size = min(int(entry.get_name().size()), MAX_FNAME_SIZE);
+		for (int j = 0; j < name_size; j++)
 		{
 			tempRaw.dir_entries[i].name[j] = entry.get_name()[j];
 		}
+		tempRaw.dir_entries[i].name[name_size] = '\0';
+
+		written = true;
+		break;
 	}
 	if (!written)
 	{
@@ -480,7 +490,10 @@ void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 
 bool DirInode::has_free_entry()
 {
-	return MAX_DIR_ENTRIES - this->get_num_entries() > 0;
+	// cout << this->get_id() << endl;
+	// cout << this->get_num_entries() << endl;
+	// cout << to_string((MAX_DIR_ENTRIES - this->get_num_entries()) > 0) << endl;
+	return (MAX_DIR_ENTRIES - this->get_num_entries()) > 0;
 }
 
 // =============================================================================

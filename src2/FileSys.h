@@ -51,6 +51,13 @@ public:
   // display stats about file or directory
   void stat(const char *name);
 
+  // TODO: remove
+  string DEBUG_LAST_RESPONSE_MESSAGE;
+  string LAST_RESPONSE()
+  {
+    return this->DEBUG_LAST_RESPONSE_MESSAGE;
+  }
+  // TODO: remove
 private:
   BasicFileSys bfs; // basic file system
   short curr_dir;   // current directory
@@ -62,7 +69,7 @@ private:
   void set_working_dir(DirInode dir);
   DirInode get_working_dir();
 
-  void response_ok(string message = "");
+  void response_ok(string message = "success");
 };
 
 #endif

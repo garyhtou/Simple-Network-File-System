@@ -1,7 +1,9 @@
 // CPSC 3500: File System
 // Implements the file system commands that are available to the shell.
 
+// TODO: REMOVE DEBUG STUFF
 bool DEBUG = true;
+// TODO: REMOVE DEBUG STUFF
 
 #include <cstring>
 #include <iostream>
@@ -134,8 +136,13 @@ void FileSys::rmdir(const char *name)
 
       // destroy directory
       dir.destroy();
+
+      this->response_ok();
+      return;
     }
   }
+
+  throw WrappedFileSys::FileNotFoundException();
 }
 
 // list the contents of current directory
@@ -164,7 +171,7 @@ void FileSys::ls()
   // Alphabetically sort the names
   sort(names.begin(), names.end(),
        [](string a, string b)
-       { return a > b; });
+       { return a < b; });
 
   // Join vector strings to a single string
   string response;
@@ -240,7 +247,7 @@ void FileSys::append(const char *name, const char *data)
   // Calculate if we will exceed max file size (if there will be sufficent
   // datablock pointers to hold the new data)
   int new_total_size = file.get_size() + data_str.size();
-  int new_total_blocks = ceil(new_total_size / BLOCK_SIZE);
+  int new_total_blocks = ceil(double(new_total_size) / BLOCK_SIZE);
   if (new_total_blocks > MAX_DATA_BLOCKS)
   {
     // The total number of datablocks needed to hold the file data exceeds the
@@ -254,7 +261,7 @@ void FileSys::append(const char *name, const char *data)
   bool has_frag = frag_size > 0;
 
   DataBlock *fragmented_block;
-  array<char, BLOCK_SIZE> fragmented_block_data;
+  array<char, BLOCK_SIZE> fragmented_block_data = {};
   if (has_frag)
   {
     // If there is internal fragmentation, it will always be located in the
@@ -266,7 +273,7 @@ void FileSys::append(const char *name, const char *data)
   }
 
   // Start organizing data (with consideration of fragmentation)
-  vector<array<char, BLOCK_SIZE>> new_data_blocks;
+  vector<array<char, BLOCK_SIZE>> new_data_vec;
 
   string new_data_str;
   if (has_frag)
@@ -284,14 +291,14 @@ void FileSys::append(const char *name, const char *data)
   for (int i = 0; i < new_data_str.length(); i += BLOCK_SIZE)
   {
     string curr_data = new_data_str.substr(i, BLOCK_SIZE);
-    array<char, BLOCK_SIZE> curr_data_block;
+    array<char, BLOCK_SIZE> curr_data_block = {};
 
     for (int j = 0; j < curr_data.size(); j++)
     {
-      curr_data_block[i] = curr_data.at(j);
+      curr_data_block[j] = curr_data.at(j);
     }
 
-    new_data_blocks.push_back(curr_data_block);
+    new_data_vec.push_back(curr_data_block);
   }
 
   // Everything seems good to go — however, there is one error that is still
@@ -309,24 +316,24 @@ void FileSys::append(const char *name, const char *data)
   vector<DataBlock> new_datablocks;
   try
   {
-    for (int i = 0; i < new_data_blocks.size(); i++)
+    for (int i = 0; i < new_data_vec.size(); i++)
     {
       if (i == 0 && has_frag)
       {
         // We need to override the existing block
-        fragmented_block->set_data(new_data_blocks.at(i));
+        fragmented_block->set_data(new_data_vec.at(i));
         continue;
       }
 
       // Attempt to create a new datablock. Will error if disk runs out to free
       // blocks.
-      DataBlock new_datablock = DataBlock(new_data_blocks.at(i));
+      DataBlock new_datablock = DataBlock(new_data_vec.at(i));
       // Add the new datablock to the vector in case we need to rollback the
       // transaction (undo allocation of this block).
       new_datablocks.push_back(new_datablock);
 
       // Add the new datablock to the file
-      unsigned int new_data_size = i == new_data_blocks.size() - 1 ? BLOCK_SIZE : new_data_str.size();
+      unsigned int new_data_size = (i != new_data_vec.size() - 1) ? BLOCK_SIZE : new_data_str.size();
       file.add_block(new_datablock, new_data_size);
     }
 
@@ -346,7 +353,7 @@ void FileSys::append(const char *name, const char *data)
       fragmented_block->set_data(fragmented_block_data);
     }
 
-    for (DataBlock datablock : new_data_blocks)
+    for (DataBlock datablock : new_data_vec)
     {
       datablock.destroy();
     }
@@ -360,7 +367,8 @@ void FileSys::append(const char *name, const char *data)
 // Should raise 501, 503
 void FileSys::cat(const char *name)
 {
-  this->head(name, -1);
+  const unsigned int MAX_FILE_SIZE = MAX_DATA_BLOCKS * BLOCK_SIZE;
+  this->head(name, MAX_FILE_SIZE);
 }
 
 // display the first N bytes of the file
@@ -385,7 +393,7 @@ void FileSys::head(const char *name, unsigned int n)
     {
       // read file data
       FileInode file = entry.get_inode();
-      unsigned int size_to_get = n < 0 ? file.get_size() : min(file.get_size(), n);
+      unsigned int size_to_get = min(file.get_size(), n);
 
       int num_blocks_to_get = floor(size_to_get / BLOCK_SIZE);
       int additional_bytes_to_get = size_to_get % BLOCK_SIZE;
@@ -403,9 +411,9 @@ void FileSys::head(const char *name, unsigned int n)
         {
           response += datum;
         }
-      }
+      };
 
-      DataBlock datablock = file.get_blocks().at(num_blocks_to_get + 1);
+      DataBlock datablock = file.get_blocks().at(num_blocks_to_get);
       for (int i = 0; i < additional_bytes_to_get; i++)
       {
         response += datablock.get_data().at(i);
@@ -566,6 +574,9 @@ void FileSys::response_ok(string message)
       cout << "[DEBUG] (FileSys::response_ok) with no message." << endl;
     }
   }
+
+  // Used for testing. TODO: remove
+  DEBUG_LAST_RESPONSE_MESSAGE = message;
 
   // TODO: format data and send to client via socket
 }
