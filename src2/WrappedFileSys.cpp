@@ -369,11 +369,11 @@ unsigned int DirInode::get_num_entries()
 	return this->num_entries;
 }
 
-vector<DirEntry<FileInode>> DirInode::get_file_entries()
+vector<DirEntry<FileInode>> DirInode::get_file_inode_entires()
 {
 	return this->file_entries;
 }
-vector<DirEntry<DirInode>> DirInode::get_dir_entries()
+vector<DirEntry<DirInode>> DirInode::get_dir_inode_entries()
 {
 	return this->dir_entries;
 }

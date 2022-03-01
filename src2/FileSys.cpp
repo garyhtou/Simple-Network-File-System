@@ -70,7 +70,7 @@ void FileSys::cd(const char *name)
   DirInode working_dir = this->get_working_dir();
 
   // Search directory until entry name match
-  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
     if (entry.get_name() == name)
     {
@@ -83,7 +83,7 @@ void FileSys::cd(const char *name)
   }
 
   // Directory was not found, see if the name is of a file
-  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
+  for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
     if (entry.get_name() == name)
     {
@@ -111,7 +111,7 @@ void FileSys::rmdir(const char *name)
   string dir_name = name;
 
   // check if this is a file
-  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
+  for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
     if (entry.get_name() == dir_name)
     {
@@ -120,7 +120,7 @@ void FileSys::rmdir(const char *name)
   }
 
   // check that directory exists
-  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
     if (entry.get_name() == dir_name)
     {
@@ -151,7 +151,8 @@ void FileSys::ls()
   DirInode working_dir = this->get_working_dir();
 
   // Check if the directory is empty (no dir or file entries).
-  if ((working_dir.get_dir_entries().size() + working_dir.get_file_entries().size()) == 0)
+  if ((working_dir.get_dir_inode_entries().size() +
+       working_dir.get_file_inode_entires().size()) == 0)
   {
     response_ok("empty folder");
     return;
@@ -159,11 +160,11 @@ void FileSys::ls()
 
   // Add all names to a vector for sorting alphabetically
   vector<string> names;
-  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
     names.push_back(entry.get_name());
   }
-  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
+  for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
     names.push_back(entry.get_name());
   }
@@ -218,7 +219,7 @@ void FileSys::append(const char *name, const char *data)
   DirInode working_dir = this->get_working_dir();
 
   // See if the name exists with a directory
-  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
     if (entry.get_name() == name)
     {
@@ -229,7 +230,7 @@ void FileSys::append(const char *name, const char *data)
   // Try to find the file
   bool found = false;
   short file_id;
-  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
+  for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
     if (entry.get_name() == name)
     {
@@ -379,7 +380,7 @@ void FileSys::head(const char *name, unsigned int n)
   DirInode working_dir = this->get_working_dir();
 
   // loop through all dir entries
-  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
     if (entry.get_name() == name)
     {
@@ -387,7 +388,7 @@ void FileSys::head(const char *name, unsigned int n)
     }
   }
 
-  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
+  for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
     if (entry.get_name() == name)
     {
@@ -435,7 +436,7 @@ void FileSys::rm(const char *name)
   DirInode working_dir = this->get_working_dir();
 
   // Loop thru all dir entries
-  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
     if (entry.get_name() == name)
     {
@@ -452,7 +453,7 @@ void FileSys::rm(const char *name)
     cout << "DEBUG: rm (entering file name match loop )" << endl;
   }
 
-  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
+  for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
     if (entry.get_name() == name)
     {
@@ -505,7 +506,7 @@ void FileSys::stat(const char *name)
   {
     cout << "DEBUG: stat (searching directory entries ))" << endl;
   }
-  for (DirEntry<DirInode> entry : working_dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
     // if found determine type
     if (entry.get_name() == name)
@@ -527,7 +528,7 @@ void FileSys::stat(const char *name)
   {
     cout << "DEBUG: stat (searching file entries ))" << endl;
   }
-  for (DirEntry<FileInode> entry : working_dir.get_file_entries())
+  for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
     // create file inode
     FileInode file = entry.get_inode();
@@ -596,14 +597,14 @@ void validate_before_new_entry(DirInode dir, string name)
   }
 
   // Check if a directory or file under this name already exists
-  for (DirEntry<DirInode> entry : dir.get_dir_entries())
+  for (DirEntry<DirInode> entry : dir.get_dir_inode_entries())
   {
     if (entry.get_name() == name)
     {
       throw WrappedFileSys::FileExistsException();
     }
   }
-  for (DirEntry<FileInode> entry : dir.get_file_entries())
+  for (DirEntry<FileInode> entry : dir.get_file_inode_entires())
   {
     if (entry.get_name() == name)
     {

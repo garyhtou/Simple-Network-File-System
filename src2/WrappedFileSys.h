@@ -288,8 +288,8 @@ public:
 
 	unsigned int get_num_entries();
 
-	vector<DirEntry<FileInode>> get_file_entries();
-	vector<DirEntry<DirInode>> get_dir_entries();
+	vector<DirEntry<FileInode>> get_file_inode_entires();
+	vector<DirEntry<DirInode>> get_dir_inode_entries();
 
 	void add_entry(DirEntry<FileInode> entry);
 	void add_entry(DirEntry<DirInode> entry);
