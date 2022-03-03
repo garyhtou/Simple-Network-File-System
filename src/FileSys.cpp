@@ -31,7 +31,7 @@ void FileSys::mount(int sock)
   WrappedFileSys::bfs = &bfs;
 
   // Default working directory to Home Directory
-  this->home();
+  this->set_working_dir(DirInode(HOME_DIR_ID));
 }
 
 // unmounts the file system
@@ -394,7 +394,7 @@ void FileSys::head(const char *name, unsigned int n)
     {
       // read file data
       FileInode file = entry.get_inode();
-      unsigned int size_to_get = min(file.get_size(), n);
+      unsigned int size_to_get = min(file.get_size(), n); // TODO: what should we do if `n < 0`
 
       int num_blocks_to_get = floor(size_to_get / BLOCK_SIZE);
       int additional_bytes_to_get = size_to_get % BLOCK_SIZE;
