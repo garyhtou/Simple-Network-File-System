@@ -579,7 +579,16 @@ void FileSys::response_ok(string message)
   // Used for testing. TODO: remove
   DEBUG_LAST_RESPONSE_MESSAGE = message;
 
-  // TODO: format data and send to client via socket
+  // Format response (add proper headers, etc.)
+  const string endline = "\r\n";
+  string full_response;
+  full_response += "200 OK" + endline;
+  full_response += "Length:" + message.length() + endline;
+  full_response += endline;
+  full_response += message;
+
+  // Send the data (response) thought the socket.
+  // TODO:
 }
 
 void validate_before_new_entry(DirInode dir, string name)
