@@ -4,9 +4,14 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-using namespace std;
-
+#include <vector>
 #include "Shell.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+using namespace std;
 
 static const string PROMPT_STRING = "NFS> "; // shell prompt
 
@@ -15,12 +20,50 @@ void Shell::mountNFS(string fs_loc)
 {
   // create the socket cs_sock and connect it to the server and port specified in fs_loc
   // if all the above operations are completed successfully, set is_mounted to true
+  struct sockaddr_in server; 
+  
+  // make vector with filesys location, servername, and port
+  vector<string> filesys_addr;
+
+  size_t curr = 0;
+  size_t delimit_idx;
+  //parse fs_loc string 
+  while((delimit_idx = fs_loc.find_first_of(':',curr)) != string::npos){
+    filesys_addr.push_back(fs_loc.substr(curr, delimit_idx - curr));
+    curr = delimit_idx++;
+  } 
+  filesys_addr.push_back(fs_loc.substr(curr));
+
+  //create socket to connect
+  if(cs_sock = socket(PF_INET,SOCK_STREAM,0)< 0){
+    cout<<"Socket Failed"<<endl;
+    exit(1);
+  }
+  cout<<"DEBUG: Socket Created "<< endl;
+
+  
+  //server address
+  server.sin_addr.s_addr = inet_addr(filesys_addr[0].c_str());
+  server.sin_family = PF_INET;
+  server.sin_port = htons(stoi(filesys_addr[1]));
+
+  //connect to server
+  if(connect(cs_sock,(sockaddr *)&server,sizeof(server))< 0){
+    cout<<"Connecton failed"<<endl;
+    exit(1);
+  }
+  cout<< "DEBUG :: Connected"<<endl;
+  is_mounted = true;
 }
 
 // Unmount the network file system if it was mounted
 void Shell::unmountNFS()
 {
   // close the socket if it was mounted
+    if (is_mounted) {
+      close(cs_sock);
+    is_mounted = false;
+  }
 }
 
 // Remote procedure call on mkdir
