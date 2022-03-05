@@ -11,6 +11,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include "Helper.h"
 using namespace std;
 
 static const string PROMPT_STRING = "NFS> "; // shell prompt
@@ -20,39 +21,41 @@ void Shell::mountNFS(string fs_loc)
 {
   // create the socket cs_sock and connect it to the server and port specified in fs_loc
   // if all the above operations are completed successfully, set is_mounted to true
-  struct sockaddr_in server; 
-  
+  struct sockaddr_in server;
+
   // make vector with filesys location, servername, and port
   vector<string> filesys_addr;
 
   size_t curr = 0;
   size_t delimit_idx;
-  //parse fs_loc string 
-  while((delimit_idx = fs_loc.find_first_of(':',curr)) != string::npos){
+  // parse fs_loc string
+  while ((delimit_idx = fs_loc.find_first_of(':', curr)) != string::npos)
+  {
     filesys_addr.push_back(fs_loc.substr(curr, delimit_idx - curr));
     curr = delimit_idx++;
-  } 
+  }
   filesys_addr.push_back(fs_loc.substr(curr));
 
-  //create socket to connect
-  if(cs_sock = socket(PF_INET,SOCK_STREAM,0)< 0){
-    cout<<"Socket Failed"<<endl;
+  // create socket to connect
+  if (cs_sock = socket(PF_INET, SOCK_STREAM, 0) < 0)
+  {
+    cout << "Socket Failed" << endl;
     exit(1);
   }
-  cout<<"DEBUG: Socket Created "<< endl;
+  cout << "DEBUG: Socket Created " << endl;
 
-  
-  //server address
+  // server address
   server.sin_addr.s_addr = inet_addr(filesys_addr[0].c_str());
   server.sin_family = PF_INET;
   server.sin_port = htons(stoi(filesys_addr[1]));
 
-  //connect to server
-  if(connect(cs_sock,(sockaddr *)&server,sizeof(server))< 0){
-    cout<<"Connecton failed"<<endl;
+  // connect to server
+  if (connect(cs_sock, (sockaddr *)&server, sizeof(server)) < 0)
+  {
+    cout << "Connecton failed" << endl;
     exit(1);
   }
-  cout<< "DEBUG :: Connected"<<endl;
+  cout << "DEBUG :: Connected" << endl;
   is_mounted = true;
 }
 
@@ -60,8 +63,9 @@ void Shell::mountNFS(string fs_loc)
 void Shell::unmountNFS()
 {
   // close the socket if it was mounted
-    if (is_mounted) {
-      close(cs_sock);
+  if (is_mounted)
+  {
+    close(cs_sock);
     is_mounted = false;
   }
 }
@@ -69,67 +73,79 @@ void Shell::unmountNFS()
 // Remote procedure call on mkdir
 void Shell::mkdir_rpc(string dname)
 {
-  // to implement
+  string cmd = "mkdir " + dname + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procedure call on cd
 void Shell::cd_rpc(string dname)
 {
-  // to implement
+  string cmd = "cd " + dname + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procedure call on home
 void Shell::home_rpc()
 {
-  // to implement
+  string cmd = "home" + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procedure call on rmdir
 void Shell::rmdir_rpc(string dname)
 {
+  string cmd = "rmdir " + dname + endline;
+  network_command(this->cs_sock, cmd);
   // to implement
 }
 
 // Remote procedure call on ls
 void Shell::ls_rpc()
 {
-  // to implement
+  string cmd = "ls " + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procedure call on create
 void Shell::create_rpc(string fname)
 {
-  // to implement
+  string cmd = "create " + fname + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procedure call on append
 void Shell::append_rpc(string fname, string data)
 {
-  // to implement
+  string cmd = "append " + fname + " " + data + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procesure call on cat
 void Shell::cat_rpc(string fname)
 {
-  // to implement
+  string cmd = "cat " + fname + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procedure call on head
 void Shell::head_rpc(string fname, int n)
 {
-  // to implement
+  string cmd = "head_rpc " + fname + " " + to_string(n) + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procedure call on rm
 void Shell::rm_rpc(string fname)
 {
-  // to implement
+  string cmd = "rm " + fname + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Remote procedure call on stat
 void Shell::stat_rpc(string fname)
 {
-  // to implement
+  string cmd = "stat " + fname + endline;
+  network_command(this->cs_sock, cmd);
 }
 
 // Executes the shell until the user quits.
@@ -262,9 +278,26 @@ bool Shell::execute_command(string command_str)
   return false;
 }
 
+void Shell::network_command(int sock_fd, string message)
+{
+  // Format message for network transit
+  string formatted_mesage = message + endline;
+
+  // Send command over the network (through the provided socket)
+  send_message(sock_fd, formatted_mesage);
+
+  // get response
+  char temp_buff[65535]; // max packet size
+  recv(sock_fd, temp_buff, sizeof(temp_buff), 0);
+
+  string response = temp_buff;
+  // cout response
+  cout << response << endl;
+}
+
 // Parses a command line into a command struct. Returned name is blank
 // for invalid command lines.
-Shell::Command Shell::parse_command(string command_str)
+Command Shell::parse_command(string command_str)
 {
   // empty command struct returned for errors
   struct Command empty = {"", "", ""};

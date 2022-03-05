@@ -16,9 +16,13 @@ using namespace std;
 
 #include "WrappedFileSys.h"
 #include <math.h>
+#include "Helper.h"
 
 // Forward declare functions
 void validate_before_new_entry(DirInode dir, string name);
+extern const string endline;
+extern string format_response(string message);
+extern void send_message(int sock_fd, string message);
 
 // mounts the file system
 void FileSys::mount(int sock)
@@ -579,16 +583,9 @@ void FileSys::response_ok(string message)
   // Used for testing. TODO: remove
   DEBUG_LAST_RESPONSE_MESSAGE = message;
 
-  // Format response (add proper headers, etc.)
-  const string endline = "\r\n";
-  string full_response;
-  full_response += "200 OK" + endline;
-  full_response += "Length:" + message.length() + endline;
-  full_response += endline;
-  full_response += message;
-
   // Send the data (response) thought the socket.
-  // TODO:
+  string formatted_message = format_response(message);
+  send_message(this->fs_sock, formatted_message);
 }
 
 void validate_before_new_entry(DirInode dir, string name)

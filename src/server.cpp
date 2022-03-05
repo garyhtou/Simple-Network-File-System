@@ -7,6 +7,7 @@
 #include <netdb.h>
 #include <sstream>
 #include "FileSys.h"
+#include "Helper.h"
 using namespace std;
 
 const int BACKLOG = 5; // Silent max value defined by C.
@@ -37,8 +38,11 @@ struct Command
 // Forward declaration
 sockaddr_in get_server_addr(in_port_t port);
 Command parse_command(string message);
-void exec_command(FileSys &fs, Command command);
+void exec_command(int sock_fd, FileSys &fs, Command command);
 void response_error(string message);
+extern const string endline;
+extern string format_response(string message);
+extern void send_message(int sock_fd, string message);
 
 int main(int argc, char *argv[])
 {
@@ -128,7 +132,7 @@ int main(int argc, char *argv[])
     // Parse the command
     Command command = parse_command(message);
     // Execute the command
-    exec_command(fs, command);
+    exec_command(new_sockfd, fs, command);
 
     // close the listening sockets
     close(new_sockfd);
@@ -155,7 +159,7 @@ sockaddr_in get_server_addr(in_port_t port)
     return server_addr;
 }
 
-void exec_command(FileSys &fs, Command command)
+void exec_command(int socket_fd, FileSys &fs, Command command)
 {
     CommandType type = command.type;
     const char *file = command.file.c_str();
@@ -207,8 +211,10 @@ void exec_command(FileSys &fs, Command command)
     catch (const WrappedFileSys::FileSystemException &e)
     {
         string err_msg = e.what();
+
+        string formatted_message = format_response(err_msg);
         // Response to socket with err_msg in proper format
-        // TODO:
+        send_message(socket_fd, formatted_message);
     }
 }
 
