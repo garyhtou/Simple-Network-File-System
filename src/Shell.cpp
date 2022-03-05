@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include "Helper.h"
+#include <strings.h>
 using namespace std;
 
 static const string PROMPT_STRING = "NFS> "; // shell prompt
@@ -24,33 +25,63 @@ void Shell::mountNFS(string fs_loc)
   struct sockaddr_in server;
 
   // make vector with filesys location, servername, and port
-  vector<string> filesys_addr;
+  // vector<string> filesys_addr;
+  string hostname;
+  string port;
+  string junk;
 
   size_t curr = 0;
   size_t delimit_idx;
   // parse fs_loc string
-  while ((delimit_idx = fs_loc.find_first_of(':', curr)) != string::npos)
+  // while ((delimit_idx = fs_loc.find_first_of(':', curr)) != string::npos)
+  //{
+  // filesys_addr.push_back(fs_loc.substr(curr, delimit_idx - curr));
+  // curr = delimit_idx++;
+  //}
+  // filesys_addr.push_back(fs_loc.substr(curr));
+  istringstream ss(fs_loc);
+  string token;
+  if (getline(ss, token, ':'))
   {
-    filesys_addr.push_back(fs_loc.substr(curr, delimit_idx - curr));
-    curr = delimit_idx++;
+    hostname = token;
+    if (getline(ss, token, ':'))
+    {
+      port = token;
+    }
   }
-  filesys_addr.push_back(fs_loc.substr(curr));
 
   // create socket to connect
-  if (cs_sock = socket(PF_INET, SOCK_STREAM, 0) < 0)
+  this->cs_sock = socket(PF_INET, SOCK_STREAM, PF_UNSPEC);
+
+  if (cs_sock < 0)
   {
     cout << "Socket Failed" << endl;
     exit(1);
   }
-  cout << "DEBUG: Socket Created " << endl;
+  cout << "DEBUG: Socket Created. fd=" << cs_sock << endl;
 
   // server address
-  server.sin_addr.s_addr = inet_addr(filesys_addr[0].c_str());
+  // server.sin_addr.s_addr = inet_addr(hostname.c_str());
+  // server.sin_family = PF_INET;
+  // server.sin_port = htons(stoi(port));
+  // for (int i = 0; i < 8; i++)
+  // {
+  //   server.sin_zero[i] = '\0';
+  // }
+
+  bzero((char *)&server, sizeof(server));
   server.sin_family = PF_INET;
-  server.sin_port = htons(stoi(filesys_addr[1]));
+  bcopy(hostname.c_str(),
+        (char *)&server.sin_addr.s_addr,
+        hostname.length());
+  server.sin_port = htons(stoi(port));
 
   // connect to server
-  if (connect(cs_sock, (sockaddr *)&server, sizeof(server)) < 0)
+  cout << "DEBUG: Going to connect" << endl;
+
+  int connect_ret = connect(cs_sock, (struct sockaddr *)&server, sizeof(server));
+  cout << "connect_ret=" << connect_ret << endl;
+  if (connect_ret < 0)
   {
     cout << "Connecton failed" << endl;
     exit(1);

@@ -57,6 +57,8 @@ int main(int argc, char *argv[])
     // SOCKET: create a socket
     int sockfd = socket(PF_INET, SOCK_STREAM, PF_UNSPEC);
 
+    cout << "DEBUG: socket created" << endl;
+
     // BIND: bind to the given port number
     struct sockaddr_in server_addr = get_server_addr(port);
     if (bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
@@ -66,6 +68,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+    cout << "DEBUG: binded" << endl;
+
     // LISTEN: prepares to accept connections
     if (listen(sockfd, BACKLOG) < 0)
     {
@@ -73,6 +77,8 @@ int main(int argc, char *argv[])
         cerr << "Failed to listen for connections" << endl;
         exit(1);
     }
+
+    cout << "DEBUG: listening" << endl;
 
     // ACCEPT: accept a single connection
     struct sockaddr_in client_addr;
@@ -84,13 +90,14 @@ int main(int argc, char *argv[])
         cerr << "Failed to accept socket" << endl;
         exit(1);
     }
+    cout << "DEBUG: accepted" << endl;
 
     // We now have a client, let's prepare the filesystem to handle requests.
 
     // Mount the file system
     FileSys fs;
     fs.mount(new_sockfd); // assume that sock is the new socket created
-                          // for a TCP connection between the client and the server.
+                          // for a TCP connection between the client and the sin_addrer.
 
     // Receive the message
     string message;        // Will contain the command from the client
