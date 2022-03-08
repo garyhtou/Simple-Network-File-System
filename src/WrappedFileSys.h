@@ -344,7 +344,7 @@ public:
 
 protected:
 	string name;
-	T inode;
+	short inode_id;
 };
 
 #endif

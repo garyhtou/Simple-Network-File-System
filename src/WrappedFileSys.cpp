@@ -23,11 +23,11 @@ Block<T>::Block(short id) // Retrieve an existing block from disk
 template <typename T>
 Block<T>::Block() // Create a new block without data
 {
-	cout << "vvvvvvvvvv" << endl
-			 << "| "
-			 << "CREATING NEW BLOCK" << endl
-			 << "^^^^^^^^^^"
-			 << endl;
+	// cout << "vvvvvvvvvv" << endl
+	// 		 << "| "
+	// 		 << "CREATING NEW BLOCK" << endl
+	// 		 << "^^^^^^^^^^"
+	// 		 << endl;
 
 	// Find a free block
 	short id = WrappedFileSys::bfs->get_free_block();
@@ -509,7 +509,7 @@ template <typename T>
 DirEntry<T>::DirEntry(string name, T inode)
 {
 	this->name = name;
-	this->inode = inode;
+	this->inode_id = inode.get_id();
 
 	// Check if the given name is too long
 	if (name.size() > MAX_FNAME_SIZE)
@@ -527,5 +527,5 @@ string DirEntry<T>::get_name()
 template <typename T>
 T DirEntry<T>::get_inode()
 {
-	return this->inode;
+	return T(this->inode_id);
 }
