@@ -53,12 +53,20 @@ int main(int argc, char *argv[])
     }
     int port = atoi(argv[1]);
 
-    // Networking part: create the socket and accept the client connection
-    // SOCKET: create a socket
+    // Networking part: create the socket and accept the client connectionSPEC);
+
     int sockfd = socket(PF_INET, SOCK_STREAM, PF_UNSPEC);
+    // cout << "Socket created with fd=" << sockfd << endl;
+    if (sockfd < 0)
+    {
+        cout << "Socket creation failed" << endl;
+        exit(1);
+    }
 
     cout << "DEBUG: socket created" << endl;
 
+    int opts = 1;
+    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opts, sizeof(opts));
     // BIND: bind to the given port number
     struct sockaddr_in server_addr = get_server_addr(port);
     if (bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
@@ -136,9 +144,12 @@ int main(int argc, char *argv[])
         }
     }
 
+    cout << "DEBUG: received message: " << message << endl;
+
     // Parse the command
     Command command = parse_command(message);
     // Execute the command
+    cout << "DEBUG: going to execute command" << endl;
     exec_command(new_sockfd, fs, command);
 
     // close the listening sockets
@@ -154,15 +165,10 @@ int main(int argc, char *argv[])
 sockaddr_in get_server_addr(in_port_t port)
 {
     struct sockaddr_in server_addr;
+    bzero((char *)&server_addr, sizeof(server_addr));
     server_addr.sin_family = PF_INET;
-    server_addr.sin_port = port;
-    server_addr.sin_addr.s_addr = INADDR_ANY;
-    // sets all bytes of sin_zero (which is not used)
-    // to the null terminatior
-    for (int i = 0; i < 8; i++)
-    {
-        server_addr.sin_zero[i] = '\0';
-    }
+    server_addr.sin_port = htons(port);
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     return server_addr;
 }
 
@@ -218,6 +224,7 @@ void exec_command(int socket_fd, FileSys &fs, Command command)
     catch (const WrappedFileSys::FileSystemException &e)
     {
         string err_msg = e.what();
+        cout << "DEBUG: fs error: " << err_msg << endl;
 
         string formatted_message = format_response(err_msg);
         // Response to socket with err_msg in proper format

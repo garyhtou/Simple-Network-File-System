@@ -22,7 +22,6 @@ void Shell::mountNFS(string fs_loc)
 {
   // create the socket cs_sock and connect it to the server and port specified in fs_loc
   // if all the above operations are completed successfully, set is_mounted to true
-  struct sockaddr_in server;
 
   // make vector with filesys location, servername, and port
   // vector<string> filesys_addr;
@@ -44,14 +43,28 @@ void Shell::mountNFS(string fs_loc)
   if (getline(ss, token, ':'))
   {
     hostname = token;
-    if (getline(ss, token, ':'))
+    if (getline(ss, token))
     {
       port = token;
     }
   }
 
+  cout << "Server Name: " << hostname << "  Port: " << port << endl;
+
+  addrinfo *addr, hints;
+  hints.ai_family = PF_INET;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_protocol = PF_UNSPEC;
+
+  int ret;
+  if ((ret = getaddrinfo(hostname.c_str(), port.c_str(), &hints, &addr)) != 0)
+  {
+    cout << "could not obtain address info " << endl;
+    cout << ret << endl;
+    exit(1);
+  }
   // create socket to connect
-  this->cs_sock = socket(PF_INET, SOCK_STREAM, PF_UNSPEC);
+  this->cs_sock = socket(PF_INET, SOCK_STREAM, 0);
 
   if (cs_sock < 0)
   {
@@ -60,26 +73,10 @@ void Shell::mountNFS(string fs_loc)
   }
   cout << "DEBUG: Socket Created. fd=" << cs_sock << endl;
 
-  // server address
-  // server.sin_addr.s_addr = inet_addr(hostname.c_str());
-  // server.sin_family = PF_INET;
-  // server.sin_port = htons(stoi(port));
-  // for (int i = 0; i < 8; i++)
-  // {
-  //   server.sin_zero[i] = '\0';
-  // }
-
-  bzero((char *)&server, sizeof(server));
-  server.sin_family = PF_INET;
-  bcopy(hostname.c_str(),
-        (char *)&server.sin_addr.s_addr,
-        hostname.length());
-  server.sin_port = htons(stoi(port));
-
   // connect to server
   cout << "DEBUG: Going to connect" << endl;
 
-  int connect_ret = connect(cs_sock, (struct sockaddr *)&server, sizeof(server));
+  int connect_ret = connect(cs_sock, addr->ai_addr, addr->ai_addrlen);
   cout << "connect_ret=" << connect_ret << endl;
   if (connect_ret < 0)
   {
@@ -87,6 +84,9 @@ void Shell::mountNFS(string fs_loc)
     exit(1);
   }
   cout << "DEBUG :: Connected" << endl;
+
+  freeaddrinfo(addr);
+
   is_mounted = true;
 }
 
@@ -238,6 +238,7 @@ void Shell::run_script(char *file_name)
 // Executes the command. Returns true for quit and false otherwise.
 bool Shell::execute_command(string command_str)
 {
+  cout << "DEBUG: (Shell::execute_command): command_str" << command_str;
   // parse the command line
   struct Command command = parse_command(command_str);
 
