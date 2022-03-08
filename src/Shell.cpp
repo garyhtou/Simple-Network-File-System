@@ -52,6 +52,7 @@ void Shell::mountNFS(string fs_loc)
   cout << "Server Name: " << hostname << "  Port: " << port << endl;
 
   addrinfo *addr, hints;
+  bzero(&hints, sizeof(hints));
   hints.ai_family = PF_INET;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = PF_UNSPEC;
@@ -64,7 +65,7 @@ void Shell::mountNFS(string fs_loc)
     exit(1);
   }
   // create socket to connect
-  this->cs_sock = socket(PF_INET, SOCK_STREAM, 0);
+  this->cs_sock = socket(PF_INET, SOCK_STREAM, PF_UNSPEC);
 
   if (cs_sock < 0)
   {
@@ -105,28 +106,28 @@ void Shell::unmountNFS()
 void Shell::mkdir_rpc(string dname)
 {
   string cmd = "mkdir " + dname + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procedure call on cd
 void Shell::cd_rpc(string dname)
 {
   string cmd = "cd " + dname + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procedure call on home
 void Shell::home_rpc()
 {
   string cmd = "home" + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procedure call on rmdir
 void Shell::rmdir_rpc(string dname)
 {
   string cmd = "rmdir " + dname + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
   // to implement
 }
 
@@ -134,49 +135,49 @@ void Shell::rmdir_rpc(string dname)
 void Shell::ls_rpc()
 {
   string cmd = "ls " + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procedure call on create
 void Shell::create_rpc(string fname)
 {
   string cmd = "create " + fname + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procedure call on append
 void Shell::append_rpc(string fname, string data)
 {
   string cmd = "append " + fname + " " + data + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procesure call on cat
 void Shell::cat_rpc(string fname)
 {
   string cmd = "cat " + fname + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procedure call on head
 void Shell::head_rpc(string fname, int n)
 {
   string cmd = "head_rpc " + fname + " " + to_string(n) + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procedure call on rm
 void Shell::rm_rpc(string fname)
 {
   string cmd = "rm " + fname + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Remote procedure call on stat
 void Shell::stat_rpc(string fname)
 {
   string cmd = "stat " + fname + endline;
-  network_command(this->cs_sock, cmd);
+  network_command(cmd);
 }
 
 // Executes the shell until the user quits.
@@ -265,6 +266,7 @@ bool Shell::execute_command(string command_str)
   }
   else if (command.name == "ls")
   {
+    cout << "DEBUG:COMMAND IS ls" << endl;
     ls_rpc();
   }
   else if (command.name == "create")
@@ -310,19 +312,26 @@ bool Shell::execute_command(string command_str)
   return false;
 }
 
-void Shell::network_command(int sock_fd, string message)
+void Shell::network_command(string message)
 {
   // Format message for network transit
   string formatted_mesage = message + endline;
 
+  cout << "DEBUG: (Shell::network_command): formatted_mesage" << formatted_mesage;
   // Send command over the network (through the provided socket)
-  send_message(sock_fd, formatted_mesage);
+  send_message(this->cs_sock, formatted_mesage);
+
+  cout << "DEBUG: Sent message" << endl;
 
   // get response
-  char temp_buff[65535]; // max packet size
-  recv(sock_fd, temp_buff, sizeof(temp_buff), 0);
+  // char temp_buff[65535]; // max packet size
+  // recv(this->cs_sock, temp_buff, sizeof(temp_buff), 0);
+  // string response = temp_buff;
 
-  string response = temp_buff;
+  cout << "DEBUG: going to recv message" << endl;
+  string response = recv_message(this->cs_sock);
+  cout << "DEBUG: got message" << endl;
+
   // cout response
   cout << response << endl;
 }

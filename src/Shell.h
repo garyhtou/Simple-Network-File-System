@@ -88,7 +88,7 @@ private:
   void stat_rpc(string fname);
 
 private:
-  void network_command(int sock_fd, string message);
+  void network_command(string message);
 };
 
 #endif

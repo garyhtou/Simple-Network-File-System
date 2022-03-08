@@ -43,6 +43,7 @@ void response_error(string message);
 extern const string endline;
 extern string format_response(string message);
 extern void send_message(int sock_fd, string message);
+extern string recv_message(int sock_fd);
 
 int main(int argc, char *argv[])
 {
@@ -67,6 +68,7 @@ int main(int argc, char *argv[])
 
     int opts = 1;
     setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opts, sizeof(opts));
+
     // BIND: bind to the given port number
     struct sockaddr_in server_addr = get_server_addr(port);
     if (bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
@@ -108,41 +110,43 @@ int main(int argc, char *argv[])
                           // for a TCP connection between the client and the sin_addrer.
 
     // Receive the message
-    string message;        // Will contain the command from the client
-    char temp_buff[65535]; // max packet size
-    int retries_left = 3;
-    while (true)
-    {
-        // Receive requests for data
-        int recv_ret = recv(new_sockfd, temp_buff, sizeof(temp_buff), 0);
-        if (recv_ret < 0)
-        {
-            // Retry
-            retries_left--;
-            if (retries_left < 0)
-            {
-                cerr << "Error receiving data from socket" << endl;
-                exit(1);
-            }
-            continue;
-        }
-        else if (recv_ret == 0)
-        {
-            // End of message
-            break;
-        }
-        else
-        {
-            // Successful read data. Reset the number of retries left
-            retries_left = 3;
-        }
+    string message = recv_message(new_sockfd);
 
-        // Process the packet
-        for (int i = 0; i < recv_ret; i++)
-        {
-            message += temp_buff[i];
-        }
-    }
+    // string message;        // Will contain the command from the client
+    // char temp_buff[65535]; // max packet size
+    // int retries_left = 3;
+    // while (true)
+    // {
+    //     // Receive requests for data
+    //     int recv_ret = recv(new_sockfd, temp_buff, sizeof(temp_buff), 0);
+    //     if (recv_ret < 0)
+    //     {
+    //         // Retry
+    //         retries_left--;
+    //         if (retries_left < 0)
+    //         {
+    //             cerr << "Error receiving data from socket" << endl;
+    //             exit(1);
+    //         }
+    //         continue;
+    //     }
+    //     else if (recv_ret == 0)
+    //     {
+    //         // End of message
+    //         break;
+    //     }
+    //     else
+    //     {
+    //         // Successful read data. Reset the number of retries left
+    //         retries_left = 3;
+    //     }
+
+    //     // Process the packet
+    //     for (int i = 0; i < recv_ret; i++)
+    //     {
+    //         message += temp_buff[i];
+    //     }
+    // }
 
     cout << "DEBUG: received message: " << message << endl;
 
