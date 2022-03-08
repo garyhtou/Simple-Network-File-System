@@ -42,7 +42,7 @@ void exec_command(int sock_fd, FileSys &fs, Command command);
 void response_error(string message);
 extern const string endline;
 extern string format_response(string message);
-extern void send_message(int sock_fd, string message);
+extern void send_message(int sock_fd, string message, bool from_server);
 extern string recv_message(int sock_fd);
 
 int main(int argc, char *argv[])
@@ -232,7 +232,7 @@ void exec_command(int socket_fd, FileSys &fs, Command command)
 
         string formatted_message = format_response(err_msg);
         // Response to socket with err_msg in proper format
-        send_message(socket_fd, formatted_message);
+        send_message(socket_fd, formatted_message,true);
     }
 }
 

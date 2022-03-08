@@ -22,7 +22,7 @@ using namespace std;
 void validate_before_new_entry(DirInode dir, string name);
 extern const string endline;
 extern string format_response(string message);
-extern void send_message(int sock_fd, string message);
+extern void send_message(int sock_fd, string message, bool from_server);
 
 // mounts the file system
 void FileSys::mount(int sock)
@@ -585,7 +585,7 @@ void FileSys::response_ok(string message)
 
   // Send the data (response) thought the socket.
   string formatted_message = format_response(message);
-  send_message(this->fs_sock, formatted_message);
+  send_message(this->fs_sock, formatted_message,true);
 }
 
 void validate_before_new_entry(DirInode dir, string name)

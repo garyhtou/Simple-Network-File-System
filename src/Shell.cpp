@@ -319,7 +319,7 @@ void Shell::network_command(string message)
 
   cout << "DEBUG: (Shell::network_command): formatted_mesage" << formatted_mesage;
   // Send command over the network (through the provided socket)
-  send_message(this->cs_sock, formatted_mesage);
+  send_message(this->cs_sock, formatted_mesage,false);
 
   cout << "DEBUG: Sent message" << endl;
 

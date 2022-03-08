@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <cstdlib>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -31,19 +32,24 @@ string format_response(string message)
 // takes a file descriptor for the socket and a string and sends the string
 // over the socket
 // code from socket_prog.pptx Author: Dr. Zhu
-void send_message(int sock_fd, string message)
+void send_message(int sock_fd, string message, bool from_server)
 {
 	cout << "sock_fd: " << sock_fd << endl;
-	string formatted_message = format_response(message);
-
+	string formatted_message;
+	if (from_server){
+		formatted_message = format_response(message);
+	}else{
+		formatted_message = message;
+	}
 	const char *msg = formatted_message.c_str();
 	char *p = (char *)&msg;
 
-	int bytes_sent = 0;
-	while (bytes_sent < sizeof(msg))
-	{
+	//int bytes_sent = 0;
+	//while (bytes_sent < sizeof(msg))
+	//{
 		cout << "currently sending: " << (void *)p << endl;
-		int x = send(sock_fd, (void *)p, sizeof(msg) - bytes_sent, 0);
+		//int x = send(sock_fd, (void *)p, sizeof(msg) - bytes_sent, 0);
+		int x = send(sock_fd,msg,strlen(msg),0);
 		cout << "sent " << x << " bytes" << endl;
 		if (x == -1 || x == 0)
 		{
@@ -52,9 +58,9 @@ void send_message(int sock_fd, string message)
 			exit(1);
 		}
 
-		p += x;
-		bytes_sent += x;
-	}
+		//p += x;
+		//bytes_sent += x;
+	//}
 }
 
 string recv_message(int sock_fd)
