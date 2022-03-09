@@ -41,10 +41,10 @@ void send_message(int sock_fd, string message, bool from_server)
 	//int bytes_sent = 0;
 	//while (bytes_sent < sizeof(msg))
 	//{
-		cout << "currently sending: " << *msg << endl;
+		//cout << "currently sending: " << *msg << endl;
 		//int x = send(sock_fd, (void *)p, sizeof(msg) - bytes_sent, 0);
 		int x = send(sock_fd,msg,strlen(msg),0);
-		cout << "sent " << x << " bytes" << endl;
+		//cout << "sent " << x << " bytes" << endl;
 		if (x == -1 || x == 0)
 		{
 			perror("error on write");
