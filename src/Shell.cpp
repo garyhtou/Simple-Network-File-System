@@ -318,7 +318,14 @@ void Shell::network_command(string message)
   // Send command over the network (through the provided socket)
   send_message(this->cs_sock, formatted_mesage, false);
 
-  string response = recv_message(this->cs_sock);
+  recv_msg_t msg = recv_message(this->cs_sock);
+  if (msg.quit)
+  {
+    cout << "Server has closed the connection" << endl;
+    exit(0);
+  }
+
+  string response = msg.message;
 
   // Parse response (remove the protcol header)
   // The code, length, and body are separated by "\r\n"

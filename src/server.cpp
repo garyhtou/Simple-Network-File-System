@@ -40,10 +40,12 @@ sockaddr_in get_server_addr(in_port_t port);
 Command parse_command(string message);
 void exec_command(int sock_fd, FileSys &fs, Command command);
 void response_error(string message);
-extern const string endline;
-extern string format_response(string code, string message);
-extern void send_message(int sock_fd, string message, bool from_server);
-extern string recv_message(int sock_fd);
+// extern const string endline;
+// extern string format_response(string code, string message);
+// extern void send_message(int sock_fd, string message, bool from_server);
+// extern struct recv_msg_t;
+// extern recv_msg_t recv_message(int sock_fd);
+using namespace Helper;
 
 int main(int argc, char *argv[])
 {
@@ -109,13 +111,19 @@ int main(int argc, char *argv[])
     fs.mount(new_sockfd); // assume that sock is the new socket created
                           // for a TCP connection between the client and the sin_addrer.
 
-    int error_code;
-    socklen_t error_code_size = sizeof(error_code);
-   // while (getsockopt(new_sockfd, SOL_SOCKET, SO_ERROR, &error_code, &error_code_size))
-    ///{
+    recv_msg_t msg;
+    msg.quit = false;
+    while (!msg.quit)
+    {
         // Receive the message
-        string message = recv_message(new_sockfd);
+        msg = recv_message(new_sockfd);
+        if (msg.quit)
+        {
+            cout << "Client has closed the connection" << endl;
+            exit(0);
+        }
 
+        string message = msg.message;
         cout << "DEBUG: received message: " << message << endl;
 
         // Parse the command
@@ -123,7 +131,7 @@ int main(int argc, char *argv[])
         // Execute the command
         cout << "DEBUG: going to execute command" << endl;
         exec_command(new_sockfd, fs, command);
-    //}
+    }
     // close the listening sockets
     close(new_sockfd);
     close(sockfd);
@@ -289,7 +297,7 @@ Command parse_command(string message)
     else
     {
         // Invalid command type
-        // TODO:
+        // TODO: error handling
         exit(0);
     }
 

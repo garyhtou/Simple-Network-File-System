@@ -20,9 +20,10 @@ using namespace std;
 
 // Forward declare functions
 void validate_before_new_entry(DirInode dir, string name);
-extern const string endline;
-extern string format_response(string code, string message);
-extern void send_message(int sock_fd, string message, bool from_server);
+// extern const string endline;
+// extern string format_response(string code, string message);
+// extern void send_message(int sock_fd, string message, bool from_server);
+using namespace Helper;
 
 // mounts the file system
 void FileSys::mount(int sock)
