@@ -529,11 +529,11 @@ void FileSys::stat(const char *name)
     message.append("First block: "); // First block
     if (blocks.size() > 0)
     {
-      message.append(to_string(blocks[0].get_id()) + '\n');
+      message.append(to_string(blocks[0].get_id()));
     }
     else
     {
-      message.append("0" + '\n');
+      message.append("0");
     }
     response_ok(message);
     return;
