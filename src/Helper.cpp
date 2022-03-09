@@ -9,5 +9,3 @@
 #include <sstream>
 #include "Helper.h"
 using namespace std;
-
-const string endline = "\r\n";

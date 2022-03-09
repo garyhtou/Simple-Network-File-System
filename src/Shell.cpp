@@ -16,6 +16,7 @@
 using namespace std;
 
 static const string PROMPT_STRING = "NFS> "; // shell prompt
+const string endline = "\r\n";
 
 // Mount the network file system with server name and port number in the format of server:port
 void Shell::mountNFS(string fs_loc)
@@ -72,7 +73,6 @@ void Shell::mountNFS(string fs_loc)
     cout << "Socket Failed" << endl;
     exit(1);
   }
-  cout << "DEBUG: Socket Created. fd=" << cs_sock << endl;
 
   // connect to server
   cout << "DEBUG: Going to connect" << endl;
@@ -84,7 +84,6 @@ void Shell::mountNFS(string fs_loc)
     cout << "Connecton failed" << endl;
     exit(1);
   }
-  cout << "DEBUG :: Connected" << endl;
 
   freeaddrinfo(addr);
 
@@ -239,7 +238,7 @@ void Shell::run_script(char *file_name)
 // Executes the command. Returns true for quit and false otherwise.
 bool Shell::execute_command(string command_str)
 {
-  cout << "DEBUG: (Shell::execute_command): command_str" << command_str;
+  // cout << "DEBUG: (Shell::execute_command): command_str" << command_str;
   // parse the command line
   struct Command command = parse_command(command_str);
 
@@ -266,7 +265,6 @@ bool Shell::execute_command(string command_str)
   }
   else if (command.name == "ls")
   {
-    cout << "DEBUG:COMMAND IS ls" << endl;
     ls_rpc();
   }
   else if (command.name == "create")
@@ -317,23 +315,27 @@ void Shell::network_command(string message)
   // Format message for network transit
   string formatted_mesage = message + endline;
 
-  cout << "DEBUG: (Shell::network_command): formatted_mesage: " << formatted_mesage;
   // Send command over the network (through the provided socket)
-  send_message(this->cs_sock, formatted_mesage,false);
+  send_message(this->cs_sock, formatted_mesage, false);
 
-  cout << "DEBUG: Sent message" << endl;
-
-  // get response
-  // char temp_buff[65535]; // max packet size
-  // recv(this->cs_sock, temp_buff, sizeof(temp_buff), 0);
-  // string response = temp_buff;
-
-  cout << "DEBUG: going to recv message" << endl;
   string response = recv_message(this->cs_sock);
-  cout << "DEBUG: got message" << endl;
 
-  // cout response
-  cout << response << endl;
+  // Parse response (remove the protcol header)
+  // The code, length, and body are separated by "\r\n"
+  string code, length, body;
+  size_t lenPos = response.find("\r\n");
+  code = response.substr(0, lenPos);
+  size_t bodyPos = response.find("\r\n", lenPos + 2);
+  length = response.substr(lenPos + 2, bodyPos);
+  body = response.substr(bodyPos + 4); // There should be two sets of "\r\n"
+
+  string output = body;
+  if (body.length() == 0)
+  {
+    output = code;
+  }
+
+  cout << output << endl;
 }
 
 // Parses a command line into a command struct. Returned name is blank

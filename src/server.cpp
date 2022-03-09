@@ -41,7 +41,7 @@ Command parse_command(string message);
 void exec_command(int sock_fd, FileSys &fs, Command command);
 void response_error(string message);
 extern const string endline;
-extern string format_response(string message);
+extern string format_response(string code, string message);
 extern void send_message(int sock_fd, string message, bool from_server);
 extern string recv_message(int sock_fd);
 
@@ -109,53 +109,21 @@ int main(int argc, char *argv[])
     fs.mount(new_sockfd); // assume that sock is the new socket created
                           // for a TCP connection between the client and the sin_addrer.
 
-    // Receive the message
-    string message = recv_message(new_sockfd);
+    int error_code;
+    socklen_t error_code_size = sizeof(error_code);
+   // while (getsockopt(new_sockfd, SOL_SOCKET, SO_ERROR, &error_code, &error_code_size))
+    ///{
+        // Receive the message
+        string message = recv_message(new_sockfd);
 
-    // string message;        // Will contain the command from the client
-    // char temp_buff[65535]; // max packet size
-    // int retries_left = 3;
-    // while (true)
-    // {
-    //     // Receive requests for data
-    //     int recv_ret = recv(new_sockfd, temp_buff, sizeof(temp_buff), 0);
-    //     if (recv_ret < 0)
-    //     {
-    //         // Retry
-    //         retries_left--;
-    //         if (retries_left < 0)
-    //         {
-    //             cerr << "Error receiving data from socket" << endl;
-    //             exit(1);
-    //         }
-    //         continue;
-    //     }
-    //     else if (recv_ret == 0)
-    //     {
-    //         // End of message
-    //         break;
-    //     }
-    //     else
-    //     {
-    //         // Successful read data. Reset the number of retries left
-    //         retries_left = 3;
-    //     }
+        cout << "DEBUG: received message: " << message << endl;
 
-    //     // Process the packet
-    //     for (int i = 0; i < recv_ret; i++)
-    //     {
-    //         message += temp_buff[i];
-    //     }
-    // }
-
-    cout << "DEBUG: received message: " << message << endl;
-
-    // Parse the command
-    Command command = parse_command(message);
-    // Execute the command
-    cout << "DEBUG: going to execute command" << endl;
-    exec_command(new_sockfd, fs, command);
-
+        // Parse the command
+        Command command = parse_command(message);
+        // Execute the command
+        cout << "DEBUG: going to execute command" << endl;
+        exec_command(new_sockfd, fs, command);
+    //}
     // close the listening sockets
     close(new_sockfd);
     close(sockfd);
@@ -230,17 +198,17 @@ void exec_command(int socket_fd, FileSys &fs, Command command)
         string err_msg = e.what();
         cout << "DEBUG: fs error: " << err_msg << endl;
 
-        string formatted_message = format_response(err_msg);
+        string formatted_message = format_response(err_msg, "");
         // Response to socket with err_msg in proper format
-        send_message(socket_fd, formatted_message,true);
+        send_message(socket_fd, formatted_message, true);
     }
 }
 
 // Takes the buffer string and calls the
 // appropriate function from FileSys
 Command parse_command(string message)
-{   
-    cout<<"parsing command"<<endl;
+{
+    cout << "parsing command" << endl;
     // Parse the buffer string
     struct Command cmd;
     istringstream ss(message);
