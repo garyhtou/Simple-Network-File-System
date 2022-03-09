@@ -28,7 +28,7 @@ string format_response(string code, string message)
 // code from socket_prog.pptx Author: Dr. Zhu
 void send_message(int sock_fd, string message, bool from_server)
 {
-
+	// TODO: LOOP
 	const char *msg = message.c_str();
 	// char *p = (char *)&msg;
 
@@ -41,7 +41,7 @@ void send_message(int sock_fd, string message, bool from_server)
 	// cout << "sent " << x << " bytes" << endl;
 	if (x == -1 || x == 0)
 	{
-		perror("error on write");
+		perror("Error while sending message over socket");
 		close(sock_fd);
 		exit(1);
 	}
@@ -59,21 +59,20 @@ struct recv_msg_t
 
 recv_msg_t recv_message(int sock_fd)
 {
+	// TODO: LOOP
 	string message;
 	int ret;
 	// while (true)
 	//{
-	cout << "receiving" << endl;
 	char temp_buff[65535]; // max packet size
 	ret = recv(sock_fd, temp_buff, sizeof(temp_buff), 0);
 	if (ret == -1)
 	{
-		perror("error on write");
+		perror("Error while receving message from socket");
 		close(sock_fd);
 		exit(1);
 	}
 
-	cout << "DEBUG: message received (partial): " << temp_buff << endl;
 	message += temp_buff;
 	//}
 

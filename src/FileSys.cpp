@@ -165,7 +165,7 @@ void FileSys::ls()
   vector<string> names;
   for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
-    names.push_back(entry.get_name());
+    names.push_back(entry.get_name() + "/"); // TODO: Check that ls on dir has slash
   }
   for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
@@ -578,9 +578,6 @@ void FileSys::response_ok(string message)
       cout << "[DEBUG] (FileSys::response_ok) with no message." << endl;
     }
   }
-
-  // Used for testing. TODO: remove
-  DEBUG_LAST_RESPONSE_MESSAGE = message;
 
   // Send the data (response) thought the socket.
   string formatted_message = format_response("200 OK", message);
