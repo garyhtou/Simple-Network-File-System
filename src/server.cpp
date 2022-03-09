@@ -26,7 +26,9 @@ enum CommandType
     cat,
     head,
     rm,
-    quit
+    quit,
+    noop,
+    invalid
 };
 struct Command
 {
@@ -41,7 +43,7 @@ Command parse_command(string message);
 void exec_command(int sock_fd, FileSys &fs, Command command);
 void response_error(string message);
 extern string format_response(string code, string message);
-extern void send_message(int sock_fd, string message, bool from_server);
+extern void send_message(int sock_fd, string message);
 struct recv_msg_t
 {
     string message;
@@ -130,9 +132,31 @@ int main(int argc, char *argv[])
 
         // Parse the command
         Command command = parse_command(message);
-        // Execute the command
-        cout << "DEBUG: going to execute command" << endl;
-        exec_command(new_sockfd, fs, command);
+
+        // Check that the command was valid
+        if (command.type == invalid)
+        {
+            cout << "DEBUG: command was invalid" << endl;
+
+            // Send back the error message from the parser
+            send_message(new_sockfd, format_response(command.data, command.data));
+        }
+        else if (command.type == noop)
+        {
+            cout << "DEBUG: command was a noop (empty command)" << endl;
+
+            // Send an empty success message
+            send_message(new_sockfd, format_response("200 OK", ""));
+        }
+        else
+        {
+            // Execute the command
+            cout << "DEBUG: going to execute command" << endl;
+            exec_command(new_sockfd, fs, command);
+        }
+
+        cout << "=== FINISHED COMMAND ===\n\n"
+             << endl;
     }
     // close the listening sockets
     close(new_sockfd);
@@ -210,7 +234,7 @@ void exec_command(int socket_fd, FileSys &fs, Command command)
 
         string formatted_message = format_response(err_msg, "");
         // Response to socket with err_msg in proper format
-        send_message(socket_fd, formatted_message, true);
+        send_message(socket_fd, formatted_message);
     }
 }
 
@@ -242,13 +266,6 @@ Command parse_command(string message)
         {
             tokens++;
         }
-    }
-
-    // empty command line handle
-    if (tokens == 0)
-    {
-        // TODO: send back error message saying empty/no command provided
-        exit(0);
     }
 
     // Convert the name to a CommandType
@@ -298,9 +315,16 @@ Command parse_command(string message)
     }
     else
     {
-        // Invalid command type
-        // TODO: error handling
-        exit(0);
+        // empty command line handle
+        if (tokens == 0)
+        {
+            cmd.type = noop;
+        }
+        else
+        {
+            cmd.type = invalid;
+            cmd.data = "Invalid command";
+        }
     }
 
     CommandType type = cmd.type;
@@ -310,8 +334,9 @@ Command parse_command(string message)
     {
         if (tokens != 1)
         {
-            // TODO: send error message "Invalide command: not enough args"
-            exit(0);
+            // Send error message
+            cmd.type = invalid;
+            cmd.data = "Invalid command: not enough arguments. Requires 1 token";
         }
     } // otherwise check for too few arguments
     else if (type == mkdir ||
@@ -324,8 +349,9 @@ Command parse_command(string message)
     {
         if (tokens != 2)
         {
-            // TODO: error handling
-            exit(0);
+            // Send error message
+            cmd.type = invalid;
+            cmd.data = "Invalid command: not enough arguments. Requires 2 tokens";
         }
     }
     // too few args for append or head
@@ -333,15 +359,11 @@ Command parse_command(string message)
     {
         if (tokens != 3)
         {
-            // TODO: error handling
-            exit(0);
+            // Send error message
+            cmd.type = invalid;
+            cmd.data = "Invalid command: not enough arguments. Requires 3 token";
         }
     }
 
     return cmd;
-}
-
-void response_error(string message)
-{
-    // TODO: send the error message to the client
 }

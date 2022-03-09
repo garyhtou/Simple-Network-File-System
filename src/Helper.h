@@ -26,7 +26,7 @@ string format_response(string code, string message)
 // takes a file descriptor for the socket and a string and sends the string
 // over the socket
 // code from socket_prog.pptx Author: Dr. Zhu
-void send_message(int sock_fd, string message, bool from_server)
+void send_message(int sock_fd, string message)
 {
 	// TODO: LOOP
 	const char *msg = message.c_str();
@@ -64,7 +64,7 @@ recv_msg_t recv_message(int sock_fd)
 	int ret;
 	// while (true)
 	//{
-	char temp_buff[65535]; // max packet size
+	char temp_buff[65535] = {}; // max packet size
 	ret = recv(sock_fd, temp_buff, sizeof(temp_buff), 0);
 	if (ret == -1)
 	{

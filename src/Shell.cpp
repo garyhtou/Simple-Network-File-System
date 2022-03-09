@@ -62,7 +62,7 @@ void Shell::mountNFS(string fs_loc)
   if ((ret = getaddrinfo(hostname.c_str(), port.c_str(), &hints, &addr)) != 0)
   {
     cout << "Error: Could not obtain address information for \"" << hostname << ":" << port << "\"" << endl;
-    cout << "getaddrinfo returned with " << ret << endl;
+    cout << "\tgetaddrinfo returned with " << ret << endl;
     exit(1);
   }
   // create socket to connect
@@ -71,7 +71,7 @@ void Shell::mountNFS(string fs_loc)
   if (cs_sock < 0)
   {
     cout << "Error: Failed to create a socket" << endl;
-    cout << "socket returned with " << cs_sock << endl;
+    cout << "\tsocket returned with " << cs_sock << endl;
     exit(1);
   }
 
@@ -80,7 +80,7 @@ void Shell::mountNFS(string fs_loc)
   if (connect_ret < 0)
   {
     cout << "Error: Failed to connect with server" << endl;
-    cout << "connect returned with " << connect_ret << endl;
+    cout << "\tconnect returned with " << connect_ret << endl;
     exit(1);
   }
 
@@ -315,7 +315,7 @@ void Shell::network_command(string message)
   string formatted_mesage = message + endline;
 
   // Send command over the network (through the provided socket)
-  send_message(this->cs_sock, formatted_mesage, false);
+  send_message(this->cs_sock, formatted_mesage);
 
   recv_msg_t msg = recv_message(this->cs_sock);
   if (msg.quit)
