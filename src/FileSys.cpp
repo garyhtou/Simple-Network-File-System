@@ -260,16 +260,18 @@ void FileSys::append(const char *name, const char *data)
   unsigned int frag_size = file.internal_frag_size();
   bool has_frag = frag_size > 0;
 
-  DataBlock *fragmented_block;
+  short frag_block_id = -1;
   array<char, BLOCK_SIZE> fragmented_block_data = {};
   if (has_frag)
   {
     // If there is internal fragmentation, it will always be located in the
     // last data block.
-    fragmented_block = &file.get_blocks().at(-1);
+    int last_block_index = file.get_blocks().size() - 1;
+    DataBlock frag_block = file.get_blocks().at(last_block_index);
+    frag_block_id = frag_block.get_id();
     // The fragmented block's data is stored in case we need to rollback the
     // transaction (more info about the transaction below).
-    fragmented_block_data = fragmented_block->get_data();
+    fragmented_block_data = frag_block.get_data();
   }
 
   // Start organizing data (with consideration of fragmentation)
@@ -280,9 +282,10 @@ void FileSys::append(const char *name, const char *data)
   {
     // Include the data in the fragmented block in the new data (the existing
     // fragmented block will be overriden)
+    DataBlock frag_block = DataBlock(frag_block_id);
     for (int i = 0; i < frag_size; i++)
     {
-      new_data_str += fragmented_block->get_data().at(i);
+      new_data_str += frag_block.get_data().at(i);
     }
   }
   new_data_str += data_str;
@@ -320,8 +323,9 @@ void FileSys::append(const char *name, const char *data)
     {
       if (i == 0 && has_frag)
       {
+        DataBlock frag_block = DataBlock(frag_block_id);
         // We need to override the existing block
-        fragmented_block->set_data(new_data_vec.at(i));
+        frag_block.set_data(new_data_vec.at(i));
         continue;
       }
 
@@ -333,7 +337,7 @@ void FileSys::append(const char *name, const char *data)
       new_datablocks.push_back(new_datablock);
 
       // Add the new datablock to the file
-      unsigned int new_data_size = (i != new_data_vec.size() - 1) ? BLOCK_SIZE : new_data_str.size();
+      unsigned int new_data_size = (i != new_data_vec.size() - 1) ? BLOCK_SIZE : new_data_str.size() % BLOCK_SIZE;
       file.add_block(new_datablock, new_data_size);
     }
 
@@ -350,16 +354,18 @@ void FileSys::append(const char *name, const char *data)
     //   2. Deallocate (reclaim) the new datablocks that we allocated.
     if (has_frag)
     {
-      fragmented_block->set_data(fragmented_block_data);
+
+      DataBlock(frag_block_id).set_data(fragmented_block_data);
     }
 
     for (DataBlock datablock : new_data_vec)
     {
+      file.remove_block(datablock);
       datablock.destroy();
     }
 
     // Let the client know that the disk ran out of space
-    throw WrappedFileSys::DiskFullException();
+    throw;
   }
 }
 
@@ -510,6 +516,7 @@ void FileSys::stat(const char *name)
   {
     // create file inode
     FileInode file = entry.get_inode();
+    cout << "file" << endl;
 
     string message;                               // make a c++ string to give response
     vector<DataBlock> blocks = file.get_blocks(); // vector of blocks we will need info about;
@@ -520,7 +527,14 @@ void FileSys::stat(const char *name)
     message.append("Number of blocks: "); // Number of blocks
     message.append(to_string(blocks.size()) + '\n');
     message.append("First block: "); // First block
-    message.append(to_string(blocks[0].get_id()) + '\n');
+    if (blocks.size() > 0)
+    {
+      message.append(to_string(blocks[0].get_id()) + '\n');
+    }
+    else
+    {
+      message.append("0" + '\n');
+    }
     response_ok(message);
     return;
   }

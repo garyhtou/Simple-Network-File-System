@@ -238,7 +238,7 @@ void FileInode::add_block(DataBlock block, unsigned int size)
 	this->size = this->raw.size;
 }
 
-void FileInode::remove_block(DataBlock block, unsigned int size)
+void FileInode::remove_block(DataBlock block)
 {
 	// When removing a block, we must shift all the blocks to the left. Otherwise,
 	// file data may be returned in the wrong order.
@@ -273,8 +273,19 @@ void FileInode::remove_block(DataBlock block, unsigned int size)
 	}
 	tempRaw.blocks[MAX_DATA_BLOCKS - 1] = UNUSED_ID;
 
+	// Determine the size of this datablock by figuring out if this the last block
+	// in the file
+	DataBlock lastBlock = this->blocks.at(this->blocks.size() - 1);
+	unsigned int size = BLOCK_SIZE;
+	if (lastBlock.get_id() == block.get_id())
+	{
+		// This is the last block, it might contain fragmentation
+		size = this->internal_frag_size();
+	}
+
 	// Update the size
 	tempRaw.size -= size;
+	cout << "sub size: " << size << ". now " << tempRaw.size << endl;
 
 	// Update the class data member BEFORE updating the disk
 	this->size = tempRaw.size;
@@ -294,9 +305,14 @@ bool FileInode::has_free_block()
 
 unsigned int FileInode::internal_frag_size()
 {
-	int num_blocks = this->blocks.size();
-	unsigned int capacity = num_blocks * BLOCK_SIZE;
-	return capacity - this->size;
+	// int num_blocks = this->blocks.size();
+	// cout << "num_blocks: " << num_blocks << endl;
+	// unsigned int capacity = num_blocks * BLOCK_SIZE;
+	// cout << "cap: " << capacity << endl;
+	// cout << "this size: " << this->size << endl;
+	// return capacity - this->size;
+
+	return this->size % BLOCK_SIZE;
 }
 
 // =============================================================================
