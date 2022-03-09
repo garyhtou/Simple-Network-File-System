@@ -314,7 +314,7 @@ Command parse_command(string message)
         else
         {
             cmd.type = invalid;
-            cmd.data = "Invalid command";
+            cmd.data = "Invalid command: " + message;
         }
     }
 

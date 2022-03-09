@@ -162,7 +162,7 @@ void Shell::cat_rpc(string fname)
 // Remote procedure call on head
 void Shell::head_rpc(string fname, int n)
 {
-  string cmd = "head_rpc " + fname + " " + to_string(n) + endline;
+  string cmd = "head " + fname + " " + to_string(n) + endline;
   network_command(cmd);
 }
 
@@ -337,7 +337,7 @@ void Shell::network_command(string message)
   body = response.substr(bodyPos + 4); // There should be two sets of "\r\n"
 
   string output = body;
-  if (body.length() == 0)
+  if (body.length() == 0 && (code != "200 OK"))
   {
     output = code;
   }
