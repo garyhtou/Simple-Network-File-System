@@ -516,7 +516,6 @@ void FileSys::stat(const char *name)
   {
     // create file inode
     FileInode file = entry.get_inode();
-    cout << "file" << endl;
 
     string message;                               // make a c++ string to give response
     vector<DataBlock> blocks = file.get_blocks(); // vector of blocks we will need info about;
