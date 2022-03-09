@@ -40,12 +40,14 @@ sockaddr_in get_server_addr(in_port_t port);
 Command parse_command(string message);
 void exec_command(int sock_fd, FileSys &fs, Command command);
 void response_error(string message);
-// extern const string endline;
-// extern string format_response(string code, string message);
-// extern void send_message(int sock_fd, string message, bool from_server);
-// extern struct recv_msg_t;
-// extern recv_msg_t recv_message(int sock_fd);
-using namespace Helper;
+extern string format_response(string code, string message);
+extern void send_message(int sock_fd, string message, bool from_server);
+struct recv_msg_t
+{
+    string message;
+    bool quit;
+};
+extern recv_msg_t recv_message(int sock_fd);
 
 int main(int argc, char *argv[])
 {

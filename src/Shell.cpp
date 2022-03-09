@@ -50,7 +50,7 @@ void Shell::mountNFS(string fs_loc)
     }
   }
 
-  cout << "Server Name: " << hostname << "  Port: " << port << endl;
+  // cout << "Server Name: " << hostname << "  Port: " << port << endl;
 
   addrinfo *addr, hints;
   bzero(&hints, sizeof(hints));
@@ -61,8 +61,8 @@ void Shell::mountNFS(string fs_loc)
   int ret;
   if ((ret = getaddrinfo(hostname.c_str(), port.c_str(), &hints, &addr)) != 0)
   {
-    cout << "could not obtain address info " << endl;
-    cout << ret << endl;
+    cout << "Error: Could not obtain address information for \"" << hostname << ":" << port << "\"" << endl;
+    cout << "getaddrinfo returned with " << ret << endl;
     exit(1);
   }
   // create socket to connect
@@ -70,21 +70,21 @@ void Shell::mountNFS(string fs_loc)
 
   if (cs_sock < 0)
   {
-    cout << "Socket Failed" << endl;
+    cout << "Error: Failed to create a socket" << endl;
+    cout << "socket returned with " << cs_sock << endl;
     exit(1);
   }
 
   // connect to server
-  cout << "DEBUG: Going to connect" << endl;
-
   int connect_ret = connect(cs_sock, addr->ai_addr, addr->ai_addrlen);
-  cout << "connect_ret=" << connect_ret << endl;
   if (connect_ret < 0)
   {
-    cout << "Connecton failed" << endl;
+    cout << "Error: Failed to connect with server" << endl;
+    cout << "connect returned with " << connect_ret << endl;
     exit(1);
   }
 
+  // Free the linked list created by getaddrinfo
   freeaddrinfo(addr);
 
   is_mounted = true;
@@ -238,7 +238,6 @@ void Shell::run_script(char *file_name)
 // Executes the command. Returns true for quit and false otherwise.
 bool Shell::execute_command(string command_str)
 {
-  // cout << "DEBUG: (Shell::execute_command): command_str" << command_str;
   // parse the command line
   struct Command command = parse_command(command_str);
 
