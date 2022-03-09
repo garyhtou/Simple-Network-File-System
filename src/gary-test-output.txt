@@ -1,0 +1,2476 @@
+NFS> mkdir dir
+success
+NFS> create file
+success
+NFS> cd dir
+success
+NFS> create file2
+success
+NFS> append file2 aaaaaaaaaaaaaaaaaa
+success
+NFS> cat file2
+aaaaaaaaaaaaaaaaaa
+NFS> head file2 5
+aaaaa
+NFS> ls
+file2
+NFS> home
+success
+NFS> ls
+dir/ file
+NFS> 
+NFS> 
+NFS> cd dir
+success
+NFS> stat file2
+Inode block: 4
+Bytes in file: 18
+Number of blocks: 1
+First block: 5
+
+NFS> rm file2
+success
+NFS> create file2
+success
+NFS> stat file2
+Inode block: 4
+Bytes in file: 0
+Number of blocks: 0
+First block: 
+NFS> rm file2
+success
+NFS> 
+NFS> 
+NFS> home
+success
+NFS> stat dir
+Directory name: dir
+Directory block: 2
+
+NFS> rmdir dir
+507 Directory is not empty
+NFS> mkdir dir
+502 File exists
+NFS> stat dir
+Directory name: dir
+Directory block: 2
+
+NFS> rmdir dir
+507 Directory is not empty
+NFS> 
+NFS> 
+NFS> create nondir
+success
+NFS> cd nondir
+500 File is not a directory
+NFS> rmdir nondir
+500 File is not a directory
+NFS> rm nondir
+success
+NFS> 
+NFS> 
+NFS> mkdir isdir
+success
+NFS> cat isdir
+501 File is a directory
+NFS> head isdir 10
+501 File is a directory
+NFS> append isdir asdflmnop
+501 File is a directory
+NFS> rm isdir
+501 File is a directory
+NFS> rmdir isdir
+success
+NFS> 
+NFS> 
+NFS> create exists
+success
+NFS> create exists
+502 File exists
+NFS> mkdir exists
+502 File exists
+NFS> rm exists
+success
+NFS> 
+NFS> 
+NFS> cd DNE
+503 File does not exist
+NFS> rmdir DNE
+503 File does not exist
+NFS> cat DNE
+503 File does not exist
+NFS> head DNE 10
+503 File does not exist
+NFS> append DNE asdflmnop
+503 File does not exist
+NFS> rm DNE
+503 File does not exist
+NFS> stat DNE
+Inode block: 3
+Bytes in file: 0
+Number of blocks: 0
+First block: 
+NFS> 
+NFS> 
+NFS> mkdir 12345678910
+504 File name is too long
+NFS> create 12345678910
+504 File name is too long
+NFS> 
+NFS> 
+NFS> mkdir notempty
+success
+NFS> cd notempty
+success
+NFS> create foo
+success
+NFS> home
+success
+NFS> rmdir notempty
+success
+NFS> cd notempty
+503 File does not exist
+NFS> rm foo
+503 File does not exist
+NFS> home
+success
+NFS> rmdir notempty
+503 File does not exist
+NFS> 
+NFS> 
+NFS> mkdir file1
+success
+NFS> mkdir file2
+success
+NFS> mkdir file3
+success
+NFS> mkdir file4
+success
+NFS> mkdir file5
+success
+NFS> mkdir file6
+success
+NFS> mkdir file7
+success
+NFS> mkdir file8
+success
+NFS> mkdir file9
+506 Directory is full
+NFS> mkdir file10
+506 Directory is full
+NFS> mkdir file11
+506 Directory is full
+NFS> rmdir file1
+success
+NFS> rmdir file2
+success
+NFS> rmdir file3
+success
+NFS> rmdir file4
+success
+NFS> rmdir file5
+success
+NFS> rmdir file6
+success
+NFS> rmdir file7
+success
+NFS> rmdir file8
+success
+NFS> rmdir file9
+503 File does not exist
+NFS> rmdir file10
+503 File does not exist
+NFS> 
+NFS> 
+NFS> create fullfile
+success
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+success
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+success
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+success
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+success
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+success
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+success
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+success
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+508 Append exceeds maximum file size
+NFS> 
+NFS> 
+NFS> append fullfile aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+508 Append exceeds maximum file size
+NFS> cat fullfile
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+NFS> rm fullfile
+success
+NFS> 
+NFS> 
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+506 Directory is full
+NFS> mkdir 9
+506 Directory is full
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+success
+NFS> mkdir 5
+success
+NFS> mkdir 6
+success
+NFS> mkdir 7
+success
+NFS> mkdir 8
+success
+NFS> mkdir 9
+success
+NFS> cd 0
+success
+NFS> mkdir 0
+success
+NFS> mkdir 1
+success
+NFS> mkdir 2
+success
+NFS> mkdir 3
+success
+NFS> mkdir 4
+505 Disk is full
+NFS> mkdir 5
+505 Disk is full
+NFS> mkdir 6
+505 Disk is full
+NFS> mkdir 7
+505 Disk is full
+NFS> mkdir 8
+505 Disk is full
+NFS> mkdir 9
+505 Disk is full
+NFS> cd 0
+success
+NFS> mkdir 0
+505 Disk is full
+NFS> mkdir 1
+505 Disk is full
+NFS> mkdir 2
+505 Disk is full
+NFS> mkdir 3
+505 Disk is full
+NFS> mkdir 4
+505 Disk is full
+NFS> mkdir 5
+505 Disk is full
+NFS> mkdir 6
+505 Disk is full
+NFS> mkdir 7
+505 Disk is full
+NFS> mkdir 8
+505 Disk is full
+NFS> mkdir 9
+505 Disk is full
