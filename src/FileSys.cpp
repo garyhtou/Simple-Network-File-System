@@ -1,10 +1,6 @@
 // CPSC 3500: File System
 // Implements the file system commands that are available to the shell.
 
-// TODO: REMOVE DEBUG STUFF
-bool DEBUG = true;
-// TODO: REMOVE DEBUG STUFF
-
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
@@ -165,7 +161,7 @@ void FileSys::ls()
   vector<string> names;
   for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
-    names.push_back(entry.get_name() + "/"); // TODO: Check that ls on dir has slash
+    names.push_back(entry.get_name() + "/");
   }
   for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
@@ -443,17 +439,8 @@ void FileSys::rm(const char *name)
   {
     if (entry.get_name() == name)
     {
-      if (DEBUG)
-      {
-        cout << "DEBUG: rm Throwing Not a file exception" << endl;
-      }
       throw WrappedFileSys::NotAFileException();
     }
-  }
-
-  if (DEBUG)
-  {
-    cout << "DEBUG: rm (entering file name match loop )" << endl;
   }
 
   for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
@@ -464,24 +451,12 @@ void FileSys::rm(const char *name)
       vector<DataBlock> datablocks = file.get_blocks();
 
       // Delete Entry
-      if (DEBUG)
-      {
-        cout << "DEBUG: rm (deleting entry))" << endl;
-      }
       working_dir.remove_entry(entry);
 
       // Delete Inode
-      if (DEBUG)
-      {
-        cout << "DEBUG: rm (deleting Inode))" << endl;
-      }
       file.destroy();
 
       // Delete datablocks
-      if (DEBUG)
-      {
-        cout << "DEBUG: rm (deleting datablocks))" << endl;
-      }
       for (DataBlock db : datablocks)
       {
         db.destroy();
@@ -505,10 +480,6 @@ void FileSys::stat(const char *name)
   DirInode working_dir = this->get_working_dir();
 
   // search directory until name found
-  if (DEBUG)
-  {
-    cout << "DEBUG: stat (searching directory entries ))" << endl;
-  }
   for (DirEntry<DirInode> entry : working_dir.get_dir_inode_entries())
   {
     // if found determine type
@@ -527,10 +498,6 @@ void FileSys::stat(const char *name)
     }
   }
   // search file enteries
-  if (DEBUG)
-  {
-    cout << "DEBUG: stat (searching file entries ))" << endl;
-  }
   for (DirEntry<FileInode> entry : working_dir.get_file_inode_entires())
   {
     // create file inode
@@ -567,18 +534,6 @@ DirInode FileSys::get_working_dir()
 
 void FileSys::response_ok(string message)
 {
-  if (DEBUG)
-  {
-    if (message.size() > 0)
-    {
-      cout << "[DEBUG] (FileSys::response_ok) message = " << message << endl;
-    }
-    else
-    {
-      cout << "[DEBUG] (FileSys::response_ok) with no message." << endl;
-    }
-  }
-
   // Send the data (response) thought the socket.
   string formatted_message = format_response("200 OK", message);
   send_message(this->fs_sock, formatted_message);

@@ -79,8 +79,9 @@ void Shell::mountNFS(string fs_loc)
   int connect_ret = connect(cs_sock, addr->ai_addr, addr->ai_addrlen);
   if (connect_ret < 0)
   {
-    cout << "Error: Failed to connect with server" << endl;
-    cout << "\tconnect returned with " << connect_ret << endl;
+    cout << "Error: Failed to connect with server (" << hostname << ":" << port
+         << ")." << endl;
+    cout << "\tDouble check that the server is running." << endl;
     exit(1);
   }
 

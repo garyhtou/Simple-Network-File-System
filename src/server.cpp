@@ -66,11 +66,9 @@ int main(int argc, char *argv[])
     // cout << "Socket created with fd=" << sockfd << endl;
     if (sockfd < 0)
     {
-        cout << "Socket creation failed" << endl;
+        cout << "Error: Failed to create socket" << endl;
         exit(1);
     }
-
-    cout << "DEBUG: socket created" << endl;
 
     int opts = 1;
     setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opts, sizeof(opts));
@@ -80,21 +78,19 @@ int main(int argc, char *argv[])
     if (bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
     {
         // Bind failed
-        cerr << "Failed to bind to port " << port << endl;
+        cerr << "Error: Failed to bind to port " << port << endl;
         exit(1);
     }
-
-    cout << "DEBUG: binded" << endl;
 
     // LISTEN: prepares to accept connections
     if (listen(sockfd, BACKLOG) < 0)
     {
         // Listen failed
-        cerr << "Failed to listen for connections" << endl;
+        cerr << "Error: Failed to listen for connections" << endl;
         exit(1);
     }
 
-    cout << "DEBUG: listening" << endl;
+    cout << "Server is ready to handle connections" << endl;
 
     // ACCEPT: accept a single connection
     struct sockaddr_in client_addr;
@@ -102,11 +98,9 @@ int main(int argc, char *argv[])
     int new_sockfd = accept(sockfd, (struct sockaddr *)&client_addr, (socklen_t *)&client_len);
     if (new_sockfd < 0)
     {
-        // Accept failed
-        cerr << "Failed to accept socket" << endl;
+        cerr << "Error: Failed to accept socket connection" << endl;
         exit(1);
     }
-    cout << "DEBUG: accepted" << endl;
 
     // We now have a client, let's prepare the filesystem to handle requests.
 
@@ -128,7 +122,7 @@ int main(int argc, char *argv[])
         }
 
         string message = msg.message;
-        cout << "DEBUG: received message: " << message << endl;
+        cout << "Received command: " << message << endl;
 
         // Parse the command
         Command command = parse_command(message);
@@ -136,14 +130,14 @@ int main(int argc, char *argv[])
         // Check that the command was valid
         if (command.type == invalid)
         {
-            cout << "DEBUG: command was invalid" << endl;
+            cout << "Command is invalid. " << command.data << endl;
 
             // Send back the error message from the parser
             send_message(new_sockfd, format_response(command.data, command.data));
         }
         else if (command.type == noop)
         {
-            cout << "DEBUG: command was a noop (empty command)" << endl;
+            cout << "Command is a noop (empty command)" << endl;
 
             // Send an empty success message
             send_message(new_sockfd, format_response("200 OK", ""));
@@ -151,12 +145,11 @@ int main(int argc, char *argv[])
         else
         {
             // Execute the command
-            cout << "DEBUG: going to execute command" << endl;
             exec_command(new_sockfd, fs, command);
         }
 
-        cout << "=== FINISHED COMMAND ===\n\n"
-             << endl;
+        // cout << "=== FINISHED COMMAND ===\n\n"
+        //      << endl;
     }
     // close the listening sockets
     close(new_sockfd);
@@ -230,7 +223,6 @@ void exec_command(int socket_fd, FileSys &fs, Command command)
     catch (const WrappedFileSys::FileSystemException &e)
     {
         string err_msg = e.what();
-        cout << "DEBUG: fs error: " << err_msg << endl;
 
         string formatted_message = format_response(err_msg, "");
         // Response to socket with err_msg in proper format
@@ -242,7 +234,6 @@ void exec_command(int socket_fd, FileSys &fs, Command command)
 // appropriate function from FileSys
 Command parse_command(string message)
 {
-    cout << "parsing command" << endl;
     // Parse the buffer string
     struct Command cmd;
     istringstream ss(message);
