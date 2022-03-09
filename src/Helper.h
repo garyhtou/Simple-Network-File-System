@@ -34,14 +34,8 @@ string format_response(string message)
 // code from socket_prog.pptx Author: Dr. Zhu
 void send_message(int sock_fd, string message, bool from_server)
 {
-	cout << "sock_fd: " << sock_fd << endl;
-	string formatted_message;
-	if (from_server){
-		formatted_message = format_response(message);
-	}else{
-		formatted_message = message;
-	}
-	const char * msg = formatted_message.c_str();
+	
+	const char * msg = message.c_str();
 	//char *p = (char *)&msg;
 
 	//int bytes_sent = 0;

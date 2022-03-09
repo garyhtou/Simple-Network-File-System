@@ -317,7 +317,7 @@ void Shell::network_command(string message)
   // Format message for network transit
   string formatted_mesage = message + endline;
 
-  cout << "DEBUG: (Shell::network_command): formatted_mesage" << formatted_mesage;
+  cout << "DEBUG: (Shell::network_command): formatted_mesage: " << formatted_mesage;
   // Send command over the network (through the provided socket)
   send_message(this->cs_sock, formatted_mesage,false);
 
