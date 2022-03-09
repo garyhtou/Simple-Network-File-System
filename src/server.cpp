@@ -92,71 +92,104 @@ int main(int argc, char *argv[])
 
     cout << "Server is ready to handle connections" << endl;
 
-    // ACCEPT: accept a single connection
-    struct sockaddr_in client_addr;
-    int client_len;
-    int new_sockfd = accept(sockfd, (struct sockaddr *)&client_addr, (socklen_t *)&client_len);
-    if (new_sockfd < 0)
+    // Handle multiple connections, serially (not concurrently)
+    while (true)
     {
-        cerr << "Error: Failed to accept socket connection" << endl;
-        exit(1);
+        try
+        {
+            // ACCEPT: accept a single connection
+            struct sockaddr_in client_addr;
+            int client_len;
+            int new_sockfd = accept(sockfd, (struct sockaddr *)&client_addr, (socklen_t *)&client_len);
+            if (new_sockfd < 0)
+            {
+                cerr << "Error: Failed to accept socket connection" << endl;
+                break;
+            }
+            else
+            {
+                cout << "New connection! (socket port: " << new_sockfd << ")" << endl;
+            }
+
+            // We now have a client, let's prepare the filesystem to handle requests.
+
+            // Mount the file system
+            FileSys fs;
+            fs.mount(new_sockfd); // assume that sock is the new socket created
+                                  // for a TCP connection between the client and the sin_addrer.
+
+            recv_msg_t msg;
+            msg.quit = false;
+            // Take in new commands until the client quits (closes the connection)
+            while (!msg.quit)
+            {
+                try
+                {
+                    // Receive the message
+                    msg = recv_message(new_sockfd);
+                    if (msg.quit)
+                    {
+                        cout << "Client has closed the connection" << endl;
+                        break;
+                    }
+
+                    string message = msg.message;
+                    cout << "Received command: " << message << endl;
+
+                    // Parse the command
+                    Command command = parse_command(message);
+
+                    // Check that the command was valid
+                    if (command.type == invalid)
+                    {
+                        cout << "Command is invalid. " << command.data << endl;
+
+                        // Send back the error message from the parser
+                        send_message(new_sockfd, format_response(command.data, command.data));
+                    }
+                    else if (command.type == noop)
+                    {
+                        cout << "Command is a noop (empty command)" << endl;
+
+                        // Send an empty success message
+                        send_message(new_sockfd, format_response("200 OK", ""));
+                    }
+                    else
+                    {
+                        try
+                        {
+                            // Execute the command
+                            exec_command(new_sockfd, fs, command);
+                        }
+                        catch (...)
+                        {
+                            // Failed sending command. Fail silently.
+                        }
+                    }
+
+                    // cout << "=== FINISHED COMMAND ===\n\n"
+                    //      << endl;
+                }
+                catch (...)
+                {
+                    // Command failed
+                    send_message(new_sockfd, format_response("Command Failed", "Command Failed"));
+                }
+            }
+            // close the listening sockets
+            close(new_sockfd);
+
+            // unmount the file system
+            fs.unmount();
+        }
+        catch (...)
+        {
+            // This connection has failed. Ignore the failure to allow future connection
+        }
     }
 
-    // We now have a client, let's prepare the filesystem to handle requests.
-
-    // Mount the file system
-    FileSys fs;
-    fs.mount(new_sockfd); // assume that sock is the new socket created
-                          // for a TCP connection between the client and the sin_addrer.
-
-    recv_msg_t msg;
-    msg.quit = false;
-    while (!msg.quit)
-    {
-        // Receive the message
-        msg = recv_message(new_sockfd);
-        if (msg.quit)
-        {
-            cout << "Client has closed the connection" << endl;
-            exit(0);
-        }
-
-        string message = msg.message;
-        cout << "Received command: " << message << endl;
-
-        // Parse the command
-        Command command = parse_command(message);
-
-        // Check that the command was valid
-        if (command.type == invalid)
-        {
-            cout << "Command is invalid. " << command.data << endl;
-
-            // Send back the error message from the parser
-            send_message(new_sockfd, format_response(command.data, command.data));
-        }
-        else if (command.type == noop)
-        {
-            cout << "Command is a noop (empty command)" << endl;
-
-            // Send an empty success message
-            send_message(new_sockfd, format_response("200 OK", ""));
-        }
-        else
-        {
-            // Execute the command
-            exec_command(new_sockfd, fs, command);
-        }
-
-        // cout << "=== FINISHED COMMAND ===\n\n"
-        //      << endl;
-    }
-    // close the listening sockets
-    close(new_sockfd);
+    // Close down server
     close(sockfd);
-
-    // unmout the file system
-    fs.unmount();
 
     return 0;
 }
