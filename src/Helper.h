@@ -41,13 +41,13 @@ void send_message(int sock_fd, string message, bool from_server)
 	}else{
 		formatted_message = message;
 	}
-	const char *msg = formatted_message.c_str();
-	char *p = (char *)&msg;
+	const char * msg = formatted_message.c_str();
+	//char *p = (char *)&msg;
 
 	//int bytes_sent = 0;
 	//while (bytes_sent < sizeof(msg))
 	//{
-		cout << "currently sending: " << (void *)p << endl;
+		cout << "currently sending: " << *msg << endl;
 		//int x = send(sock_fd, (void *)p, sizeof(msg) - bytes_sent, 0);
 		int x = send(sock_fd,msg,strlen(msg),0);
 		cout << "sent " << x << " bytes" << endl;
@@ -67,16 +67,16 @@ string recv_message(int sock_fd)
 {
 	string message;
 	int ret;
-	while (true)
-	{
-		cout << "in loop" << endl;
+	//while (true)
+	//{
+		cout << "receiving" << endl;
 		char temp_buff[65535]; // max packet size
-		ret = recv(sock_fd, temp_buff, sizeof(temp_buff), 0);
-		if (ret == 0)
-		{
-			break;
-		}
-		else if (ret == -1)
+		ret = read(sock_fd, temp_buff, sizeof(temp_buff));
+		//if (ret == 0)
+		//{
+		//	exit(1);
+		//}
+		if (ret == -1)
 		{
 			perror("error on write");
 			close(sock_fd);
@@ -85,7 +85,7 @@ string recv_message(int sock_fd)
 
 		cout << "DEBUG: message received (partial): " << temp_buff << endl;
 		message += temp_buff;
-	}
+	//}
 
 	return message;
 }
