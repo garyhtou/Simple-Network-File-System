@@ -239,7 +239,8 @@ void exec_command(int socket_fd, FileSys &fs, Command command)
 // Takes the buffer string and calls the
 // appropriate function from FileSys
 Command parse_command(string message)
-{
+{   
+    cout<<"parsing command"<<endl;
     // Parse the buffer string
     struct Command cmd;
     istringstream ss(message);
