@@ -266,8 +266,9 @@ public:
 	unsigned int get_size();
 
 	vector<DataBlock> get_blocks();
-	void add_block(DataBlock block, unsigned int size);
+	void add_block(DataBlock block);
 	void remove_block(DataBlock block);
+	void set_size(unsigned int size);
 
 	bool has_free_block();
 	unsigned int internal_frag_size();

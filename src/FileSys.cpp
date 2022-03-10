@@ -244,6 +244,8 @@ void FileSys::append(const char *name, const char *data)
   }
   FileInode file = FileInode(file_id);
 
+  int original_total_size = file.get_size();
+
   // Calculate if we will exceed max file size (if there will be sufficent
   // datablock pointers to hold the new data)
   int new_total_size = file.get_size() + data_str.size();
@@ -255,7 +257,7 @@ void FileSys::append(const char *name, const char *data)
     throw WrappedFileSys::FileFullException();
   }
 
-  // Determine is we need to update the last existing block (this is necessary
+  // Determine if we need to update the last existing block (this is necessary
   // if the last block still has unused space).
   unsigned int frag_size = file.internal_frag_size();
   bool has_frag = frag_size > 0;
@@ -317,6 +319,7 @@ void FileSys::append(const char *name, const char *data)
 
   // ========== TRANSACTION ==========
   vector<DataBlock> new_datablocks;
+  vector<DataBlock> added_datablocks;
   try
   {
     for (int i = 0; i < new_data_vec.size(); i++)
@@ -335,15 +338,16 @@ void FileSys::append(const char *name, const char *data)
       // Add the new datablock to the vector in case we need to rollback the
       // transaction (undo allocation of this block).
       new_datablocks.push_back(new_datablock);
-
-      // Add the new datablock to the file
-      unsigned int new_data_size = (i != new_data_vec.size() - 1)
-                                       ? BLOCK_SIZE
-                                       : (new_data_str.size() % BLOCK_SIZE == 0
-                                              ? BLOCK_SIZE
-                                              : new_data_str.size() % BLOCK_SIZE);
-      file.add_block(new_datablock, new_data_size);
     }
+
+    // Make add blocks to file after the block exists
+    for (DataBlock datablock : new_datablocks)
+    {
+      file.add_block(datablock);
+    }
+
+    // Set the file's size last (ensures the instruction is atomic)
+    file.set_size(new_total_size);
 
     // Looks like everything worked! The disk had enough free blocks to append
     // the new data.
@@ -352,19 +356,28 @@ void FileSys::append(const char *name, const char *data)
   catch (const WrappedFileSys::DiskFullException &e)
   {
     // Oh yikes, looks like the disk ran out of space. We now need to rollback
-    // this transaction. Two things need to happen:
-    //   1. If there was a fragmented datablock, then undo the data override
-    //      that we performed earlier.
-    //   2. Deallocate (reclaim) the new datablocks that we allocated.
+    // this transaction. Few things need to happen:
+    //   1. Reset the size of the file back to original
+    //   2. Unlink new datablocks from the file
+    //   3. Deallocate (reclaim) the new datablocks that we allocated.
+
+    file.set_size(original_total_size);
+
+    // Not completely necessary, but nice: reset unused bytes back to 0
     if (has_frag)
     {
-
       DataBlock(frag_block_id).set_data(fragmented_block_data);
     }
 
-    for (DataBlock datablock : new_data_vec)
+    // Remove blocks from file
+    for (DataBlock datablock : added_datablocks)
     {
       file.remove_block(datablock);
+    }
+
+    // Delete the blocks (deallocate/reclaim)
+    for (DataBlock datablock : new_data_vec)
+    {
       datablock.destroy();
     }
 

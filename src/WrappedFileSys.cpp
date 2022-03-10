@@ -190,16 +190,10 @@ vector<DataBlock> FileInode::get_blocks()
 	return this->blocks;
 }
 
-void FileInode::add_block(DataBlock block, unsigned int size)
+void FileInode::add_block(DataBlock block)
 {
 	// The block has already been written to the disk, so the responsiblity of
 	// this function is to provide a pointer to that block
-
-	// Check that the size is not greater than what a single block can hold
-	if (size > BLOCK_SIZE)
-	{
-		cerr << "ERROR (FileInode::add_block): DataBlock size is greater than BLOCK_SIZE." << endl;
-	}
 
 	// Create a temp copy of the raw block
 	inode_t tempRaw = this->get_raw();
@@ -215,7 +209,6 @@ void FileInode::add_block(DataBlock block, unsigned int size)
 
 		// We've found an empty spot
 		tempRaw.blocks[i] = block.get_id();
-		tempRaw.size += size;
 		written = true;
 		break;
 	}
@@ -230,7 +223,6 @@ void FileInode::add_block(DataBlock block, unsigned int size)
 
 	// Update the class data member AFTER updating the disk
 	this->blocks.push_back(block);
-	this->size = this->raw.size;
 }
 
 void FileInode::remove_block(DataBlock block)
@@ -268,21 +260,7 @@ void FileInode::remove_block(DataBlock block)
 	}
 	tempRaw.blocks[MAX_DATA_BLOCKS - 1] = UNUSED_ID;
 
-	// Determine the size of this datablock by figuring out if this the last block
-	// in the file
-	DataBlock lastBlock = this->blocks.at(this->blocks.size() - 1);
-	unsigned int size = BLOCK_SIZE;
-	if (lastBlock.get_id() == block.get_id())
-	{
-		// This is the last block, it might contain fragmentation
-		size = this->internal_frag_size();
-	}
-
-	// Update the size
-	tempRaw.size -= size;
-
 	// Update the class data member BEFORE updating the disk
-	this->size = tempRaw.size;
 	this->blocks.erase(remove_if(this->blocks.begin(), this->blocks.end(),
 															 [=](DataBlock block) -> bool
 															 { return block.get_id() == block_id; }),
@@ -290,6 +268,14 @@ void FileInode::remove_block(DataBlock block)
 
 	// Write the temp block to disk
 	this->write_and_set_raw_block(tempRaw);
+}
+void FileInode::set_size(unsigned int size)
+{
+	inode_t tempRaw = this->get_raw();
+	tempRaw.size = size;
+
+	this->write_and_set_raw_block(tempRaw);
+	this->size = tempRaw.size;
 }
 
 bool FileInode::has_free_block()
