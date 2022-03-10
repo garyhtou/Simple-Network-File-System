@@ -1,19 +1,21 @@
-//// Each team member's name and contributions ////////////
+# Simple Network File System
+
+## Meet the team
 Team member #1: Gary Tou
 Contributions:
-    - Mounting and unmounting TCP socket (Shell)
+    - Creating and connecting TCP socket (Shell)
     - Executing commands (Shell)
-    - home, append, stat (FileSys)
-    - Accept, close (server)
-    - Receiving messages (Helper)
+    - home, append, rm (FileSys)
+    - Receiving messages for Client (Helper)
+    - Object Orientated wrapped classes for the BasicFileSys (WrappedFileSys)
 
 Team member #2: Harry Rudolph
 Contributions:
     - Parsing the command line (Shell)
     - Formatting and outputting command messages (Shell)
-    - mkdir, cd, rm, rmdir in (FileSys)
-    - Socket, bind, listen (server)
-    - Receiving messages (Helper)
+    - mkdir, cd, stat, rmdir in (FileSys)
+    - Receiving messages for Server (Helper)
+    - Message formatting
 
 Team member #3: Castel Villalobos
 Contributions:
@@ -21,16 +23,21 @@ Contributions:
     - ls, create, head, cat (FileSys)
     - Parsing and executing (server)
     - Sending messages (Helper)
+    - Error Handling
 
 
-//// My own rating on the functionality ///////////////////
+### My own rating on the functionality
 Rating: A
-Explanation: Code is not only fully functional (all tested cases were passed),
-but also the design was excellent; an object oriented interface for blocked 
-memory and error management was implemented (see WrappedFileSys.cpp/WrappedFileSys.h).
+Explanation:
+    - Code is fully functional (all tested cases and handles edge cases)
+    - Robust design. We created an object oriented interface (wrapped classes)
+      for disk block management and error handling (see WrappedFileSys.cpp and
+      WrappedFileSys.h). Easy to maintain and read
+    - Resistant to unexpected failures (power outages, etc.)
+    - Tested and works with three other servers and clients
 
 
-//// Test cases for each file system command ////////////////////
+### Test cases
 
 Test case #1: ls
 Results: empty folder
