@@ -27,7 +27,6 @@ Inode block: 4
 Bytes in file: 18
 Number of blocks: 1
 First block: 5
-
 NFS> rm file2
 success
 NFS> create file2
@@ -36,7 +35,7 @@ NFS> stat file2
 Inode block: 4
 Bytes in file: 0
 Number of blocks: 0
-First block: 
+First block: 0
 NFS> rm file2
 success
 NFS> 
@@ -109,7 +108,7 @@ NFS> stat DNE
 Inode block: 3
 Bytes in file: 0
 Number of blocks: 0
-First block: 
+First block: 0
 NFS> 
 NFS> 
 NFS> mkdir 12345678910
