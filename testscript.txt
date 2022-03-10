@@ -8,6 +8,7 @@ head file2 5
 ls
 home
 ls
+rm file
 
 
 cd dir

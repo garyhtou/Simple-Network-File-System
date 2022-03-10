@@ -18,6 +18,8 @@ NFS> home
 success
 NFS> ls
 dir/ file
+NFS> rm file
+success
 NFS> 
 NFS> 
 NFS> cd dir
@@ -25,16 +27,16 @@ success
 NFS> stat file2
 Inode block: 4
 Bytes in file: 18
-Number of blocks: 1
+Number of blocks: 2
 First block: 5
 NFS> rm file2
 success
 NFS> create file2
 success
 NFS> stat file2
-Inode block: 4
+Inode block: 3
 Bytes in file: 0
-Number of blocks: 0
+Number of blocks: 1
 First block: 0
 NFS> rm file2
 success
@@ -43,17 +45,17 @@ NFS>
 NFS> home
 success
 NFS> stat dir
-Directory name: dir
+Directory name: dir/
 Directory block: 2
 NFS> rmdir dir
-507 Directory is not empty
+success
 NFS> mkdir dir
-502 File exists
+success
 NFS> stat dir
-Directory name: dir
+Directory name: dir/
 Directory block: 2
 NFS> rmdir dir
-507 Directory is not empty
+success
 NFS> 
 NFS> 
 NFS> create nondir
@@ -103,10 +105,7 @@ NFS> append DNE asdflmnop
 NFS> rm DNE
 503 File does not exist
 NFS> stat DNE
-Inode block: 3
-Bytes in file: 0
-Number of blocks: 0
-First block: 0
+503 File does not exist
 NFS> 
 NFS> 
 NFS> mkdir 12345678910
@@ -124,15 +123,15 @@ success
 NFS> home
 success
 NFS> rmdir notempty
-success
+507 Directory is not empty
 NFS> cd notempty
-503 File does not exist
+success
 NFS> rm foo
-503 File does not exist
+success
 NFS> home
 success
 NFS> rmdir notempty
-503 File does not exist
+success
 NFS> 
 NFS> 
 NFS> mkdir file1
@@ -152,9 +151,9 @@ success
 NFS> mkdir file8
 success
 NFS> mkdir file9
-506 Directory is full
+success
 NFS> mkdir file10
-506 Directory is full
+success
 NFS> mkdir file11
 506 Directory is full
 NFS> rmdir file1
@@ -174,9 +173,9 @@ success
 NFS> rmdir file8
 success
 NFS> rmdir file9
-503 File does not exist
+success
 NFS> rmdir file10
-503 File does not exist
+success
 NFS> 
 NFS> 
 NFS> create fullfile
@@ -224,9 +223,9 @@ success
 NFS> mkdir 7
 success
 NFS> mkdir 8
-506 Directory is full
+success
 NFS> mkdir 9
-506 Directory is full
+success
 NFS> cd 0
 success
 NFS> mkdir 0
@@ -2442,19 +2441,19 @@ success
 NFS> mkdir 5
 success
 NFS> mkdir 6
-505 Disk is full
+success
 NFS> mkdir 7
-505 Disk is full
+success
 NFS> mkdir 8
-505 Disk is full
+success
 NFS> mkdir 9
-505 Disk is full
+success
 NFS> cd 0
 success
 NFS> mkdir 0
-505 Disk is full
+success
 NFS> mkdir 1
-505 Disk is full
+success
 NFS> mkdir 2
 505 Disk is full
 NFS> mkdir 3
