@@ -411,7 +411,7 @@ void FileSys::head(const char *name, unsigned int n)
         return;
       }
 
-      unsigned int size_to_get = min(file.get_size(), n); // TODO: what should we do if `n < 0`
+      unsigned int size_to_get = min(file.get_size(), n);
 
       int num_blocks_to_get = floor(size_to_get / BLOCK_SIZE);
       int additional_bytes_to_get = size_to_get % BLOCK_SIZE;
