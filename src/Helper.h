@@ -55,7 +55,7 @@ recv_msg_t recv_message_client(int sock_fd)
 {
 	recv_msg_t msg;
 	msg.quit = false;
-	char temp_buff[150] = {};
+	char temp_buff[65535] = {};
 
 	int size;
 	while (true)
@@ -101,7 +101,7 @@ recv_msg_t recv_message_client(int sock_fd)
 				continue;
 			}
 
-			string body = msg.message.substr(bodyPos, msg.message.length());
+			string body = msg.message.substr(bodyPos + 2, length);
 			if (body.length() < length)
 			{
 				// We're still missing a portion of the message body
@@ -134,7 +134,7 @@ recv_msg_t recv_message_server(int sock_fd)
 {
 	recv_msg_t msg;
 	msg.quit = false;
-	char temp_buff[150] = {};
+	char temp_buff[65535] = {};
 
 	int size;
 	while (true)
