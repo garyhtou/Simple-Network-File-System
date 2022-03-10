@@ -531,7 +531,7 @@ void FileSys::stat(const char *name)
     message.append("Bytes in file: "); /// Bytes in file
     message.append(to_string(file.get_size()) + '\n');
     message.append("Number of blocks: "); // Number of blocks
-    message.append(to_string(blocks.size()) + '\n');
+    message.append(to_string(blocks.size() + 1) + '\n');
     message.append("First block: "); // First block
     if (blocks.size() > 0)
     {
