@@ -1,28 +1,78 @@
 //// Each team member's name and contributions ////////////
-Team member #1: xxx
+Team member #1: Gary Tou
 Contributions:
+    - Mounting and unmounting TCP socket (Shell)
+    - Executing commands (Shell)
+    - home, append, stat (FileSys)
+    - Accept, close (server)
+    - Receiving messages (Helper)
 
-Team member #2: xxx
+Team member #2: Harry Rudolph
 Contributions:
+    - Parsing the command line (Shell)
+    - Formatting and outputting command messages (Shell)
+    - mkdir, cd, rm, rmdir in (FileSys)
+    - Socket, bind, listen (server)
+    - Receiving messages (Helper)
 
-...
-
-
+Team member #3: Castel Villalobos
+Contributions:
+    - Remote procedure call commands (Shell)
+    - ls, create, head, cat (FileSys)
+    - Parsing and executing (server)
+    - Sending messages (Helper)
 
 
 //// My own rating on the functionality ///////////////////
-Rating: A, B, C, D, or F?
-Explanation: 
-...
-
-
+Rating: A
+Explanation: Code is not only fully functional (all tested cases were passed),
+but also the design was excellent; an object oriented interface for blocked 
+memory and error management was implemented (see WrappedFileSys.cpp/WrappedFileSys.h).
 
 
 //// Test cases for each file system command ////////////////////
-Test case #1: mkdir abc
-Results: 
 
+Test case #1: ls
+Results: empty folder
 
-Test case #2: 
+Test case #2: mkdir abc
+Results: success
 
-...
+Test case #3: cd abc
+Results: success
+
+Test case #4: home
+Results: success
+
+Test case #5: create filename
+Results: success
+
+Test case #6: append filename asldfjasldfj
+Results: success
+
+Test case #7: stat filename
+Results: Inode block: 3
+         Bytes in file: 12
+         Number of blocks: 2
+         First block: 4
+
+Test case #8: cat filename
+Results: asldfjasldfj
+
+Test case #9: head filename 4
+Results: asld
+
+Test case #10: rm filename
+Results: success
+
+Test case #11: rm hello
+Results: 503 File does not exist
+
+Test case #12: rmdir (non-empty directory)
+Results: 507 Directory is not empty
+
+Test case #13: rmdir abc
+Results: success
+
+Test case #14: rmdir (non-existant directory)
+Results: 507 Directory does not exist
