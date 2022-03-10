@@ -156,15 +156,8 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
-                        try
-                        {
-                            // Execute the command
-                            exec_command(new_sockfd, fs, command);
-                        }
-                        catch (...)
-                        {
-                            // Failed sending command. Fail silently.
-                        }
+                        // Execute the command
+                        exec_command(new_sockfd, fs, command);
                     }
 
                     // cout << "=== FINISHED COMMAND ===\n\n"
