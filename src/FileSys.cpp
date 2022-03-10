@@ -407,7 +407,7 @@ void FileSys::head(const char *name, unsigned int n)
       // Check that the file is not empty
       if (file.get_size() <= 0)
       {
-        response_ok("");
+        response_ok("" + '\n');
         return;
       }
 
@@ -440,7 +440,7 @@ void FileSys::head(const char *name, unsigned int n)
         }
       }
 
-      response_ok(response);
+      response_ok(response + '\n');
       return;
     }
   }
@@ -483,7 +483,7 @@ void FileSys::rm(const char *name)
         db.destroy();
       }
 
-      response_ok("success");
+      response_ok();
       return;
     }
   }
