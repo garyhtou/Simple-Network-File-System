@@ -190,6 +190,7 @@ public:
 	// destroy the blocks which belong to the inode. You must do that!
 	void destroy()
 	{
+		// cout << "\tDESTROYING BLOCK" << endl;
 		// Delete block from disk
 		WrappedFileSys::bfs->reclaim_block(this->get_id());
 	}

@@ -337,7 +337,11 @@ void FileSys::append(const char *name, const char *data)
       new_datablocks.push_back(new_datablock);
 
       // Add the new datablock to the file
-      unsigned int new_data_size = (i != new_data_vec.size() - 1) ? BLOCK_SIZE : new_data_str.size() % BLOCK_SIZE;
+      unsigned int new_data_size = (i != new_data_vec.size() - 1)
+                                       ? BLOCK_SIZE
+                                       : (new_data_str.size() % BLOCK_SIZE == 0
+                                              ? BLOCK_SIZE
+                                              : new_data_str.size() % BLOCK_SIZE);
       file.add_block(new_datablock, new_data_size);
     }
 

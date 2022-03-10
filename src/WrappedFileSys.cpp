@@ -23,11 +23,7 @@ Block<T>::Block(short id) // Retrieve an existing block from disk
 template <typename T>
 Block<T>::Block() // Create a new block without data
 {
-	// cout << "vvvvvvvvvv" << endl
-	// 		 << "| "
-	// 		 << "CREATING NEW BLOCK" << endl
-	// 		 << "^^^^^^^^^^"
-	// 		 << endl;
+	// cout << "\tCREATING NEW BLOCK" << endl;
 
 	// Find a free block
 	short id = WrappedFileSys::bfs->get_free_block();
