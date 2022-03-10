@@ -433,6 +433,8 @@ void DirInode::add_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 		}
 		tempRaw.dir_entries[i].name[name_size] = '\0';
 
+		tempRaw.num_entries++;
+
 		written = true;
 		break;
 	}
