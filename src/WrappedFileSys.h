@@ -1,4 +1,3 @@
-// Wrapped File System provides wrapper classes on top of the provided structs
 // and functions provided by `blocks.h` and `BasicFileSys`.
 //
 // The goal is to provide an object oriented interface to the underlying
@@ -74,6 +73,12 @@ namespace WrappedFileSys
 	// ===========================================================================
 	class FileSystemException : public exception
 	{
+	public:
+		// Applies to: cd, rmdir
+		const char *what() const throw()
+		{
+			return "A File System error has occured";
+		}
 	};
 	class NotADirException : public FileSystemException
 	{

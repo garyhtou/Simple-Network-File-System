@@ -149,7 +149,7 @@ FileInode::FileInode(short id) : Inode(id) // Retrieve an existing file inode fr
 	if (!this->is_file())
 	{
 		cerr << "ERROR (FileInode::FileInode): Inode is not a file inode." << endl;
-		exit(1);
+		throw WrappedFileSys::FileSystemException();
 	}
 
 	// Deserialize data
@@ -263,7 +263,7 @@ void FileInode::remove_block(DataBlock block)
 	if (index == -1)
 	{
 		cerr << "ERROR (FileInode::remove_block): Block #" << block_id << " was not found in the File Inode." << endl;
-		exit(1);
+		throw WrappedFileSys::FileSystemException();
 	}
 
 	// Shift the block ids over (overriding the block we want to remove)
@@ -324,7 +324,7 @@ DirInode::DirInode(short id) : Inode(id) // Retrieve an existing directory inode
 	if (!this->is_dir())
 	{
 		cerr << "ERROR (DirInode::DirInode): Inode is not a directory inode." << endl;
-		exit(1);
+		throw WrappedFileSys::FileSystemException();
 	}
 
 	// Deserialize data
@@ -486,7 +486,7 @@ void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 	if (index == -1)
 	{
 		cerr << "ERROR (DirInode::remove_entry): DirEntry for Block #" << block_id << " was not found in the Dir Inode #" << this->get_id() << "." << endl;
-		exit(1);
+		throw WrappedFileSys::FileSystemException();
 	}
 
 	// Shift the block ids over (overriding the block we want to remove)
