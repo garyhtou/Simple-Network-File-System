@@ -127,7 +127,6 @@ recv_msg_t recv_message_client(int sock_fd)
 		}
 	}
 
-	// cout << "\tdone" << endl;
 	return msg;
 }
 

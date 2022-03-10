@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     // cout << "Socket created with fd=" << sockfd << endl;
     if (sockfd < 0)
     {
-        cout << "Error: Failed to create socket" << endl;
+        cerr << "Error: Failed to create socket" << endl;
         exit(1);
     }
 
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                cout << "New connection! (socket port: " << new_sockfd << ")" << endl;
+                // cout << "New connection! (socket port: " << new_sockfd << ")" << endl;
             }
 
             // We now have a client, let's prepare the filesystem to handle requests.
@@ -129,12 +129,12 @@ int main(int argc, char *argv[])
                     msg = recv_message_server(new_sockfd);
                     if (msg.quit)
                     {
-                        cout << "Client has closed the connection" << endl;
+                        // cout << "Client has closed the connection" << endl;
                         break;
                     }
 
                     string message = msg.message;
-                    cout << "Received command: " << message << endl;
+                    // cout << "Received command: " << message << endl;
 
                     // Parse the command
                     Command command = parse_command(message);
@@ -142,14 +142,14 @@ int main(int argc, char *argv[])
                     // Check that the command was valid
                     if (command.type == invalid)
                     {
-                        cout << "Command is invalid. " << command.data << endl;
+                        // cout << "Command is invalid. " << command.data << endl;
 
                         // Send back the error message from the parser
                         send_message(new_sockfd, format_response(command.data, command.data));
                     }
                     else if (command.type == noop)
                     {
-                        cout << "Command is a noop (empty command)" << endl;
+                        // cout << "Command is a noop (empty command)" << endl;
 
                         // Send an empty success message
                         send_message(new_sockfd, format_response("200 OK", ""));

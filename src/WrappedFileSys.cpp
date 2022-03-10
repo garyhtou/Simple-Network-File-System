@@ -23,7 +23,6 @@ Block<T>::Block(short id) // Retrieve an existing block from disk
 template <typename T>
 Block<T>::Block() // Create a new block without data
 {
-	// cout << "\tCREATING NEW BLOCK" << endl;
 
 	// Find a free block
 	short id = WrappedFileSys::bfs->get_free_block();
@@ -281,7 +280,6 @@ void FileInode::remove_block(DataBlock block)
 
 	// Update the size
 	tempRaw.size -= size;
-	cout << "sub size: " << size << ". now " << tempRaw.size << endl;
 
 	// Update the class data member BEFORE updating the disk
 	this->size = tempRaw.size;
@@ -301,13 +299,6 @@ bool FileInode::has_free_block()
 
 unsigned int FileInode::internal_frag_size()
 {
-	// int num_blocks = this->blocks.size();
-	// cout << "num_blocks: " << num_blocks << endl;
-	// unsigned int capacity = num_blocks * BLOCK_SIZE;
-	// cout << "cap: " << capacity << endl;
-	// cout << "this size: " << this->size << endl;
-	// return capacity - this->size;
-
 	return this->size % BLOCK_SIZE;
 }
 
@@ -510,9 +501,6 @@ void DirInode::remove_entry_base(DirEntry<T> entry, vector<DirEntry<T>> &vec)
 
 bool DirInode::has_free_entry()
 {
-	// cout << this->get_id() << endl;
-	// cout << this->get_num_entries() << endl;
-	// cout << to_string((MAX_DIR_ENTRIES - this->get_num_entries()) > 0) << endl;
 	return (MAX_DIR_ENTRIES - this->get_num_entries()) > 0;
 }
 
