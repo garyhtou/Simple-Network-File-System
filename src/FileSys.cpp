@@ -431,10 +431,13 @@ void FileSys::head(const char *name, unsigned int n)
         }
       };
 
-      DataBlock datablock = file.get_blocks().at(num_blocks_to_get);
-      for (int i = 0; i < additional_bytes_to_get; i++)
+      if (additional_bytes_to_get > 0 && file.get_blocks().size() > num_blocks_to_get)
       {
-        response += datablock.get_data().at(i);
+        DataBlock datablock = file.get_blocks().at(num_blocks_to_get);
+        for (int i = 0; i < additional_bytes_to_get; i++)
+        {
+          response += datablock.get_data().at(i);
+        }
       }
 
       response_ok(response);
