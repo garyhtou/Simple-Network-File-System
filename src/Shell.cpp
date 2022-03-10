@@ -106,28 +106,28 @@ void Shell::unmountNFS()
 void Shell::mkdir_rpc(string dname)
 {
   string cmd = "mkdir " + dname + endline;
-  network_command(cmd);
+  network_command(cmd, false);
 }
 
 // Remote procedure call on cd
 void Shell::cd_rpc(string dname)
 {
   string cmd = "cd " + dname + endline;
-  network_command(cmd);
+  network_command(cmd, false);
 }
 
 // Remote procedure call on home
 void Shell::home_rpc()
 {
   string cmd = "home" + endline;
-  network_command(cmd);
+  network_command(cmd, false);
 }
 
 // Remote procedure call on rmdir
 void Shell::rmdir_rpc(string dname)
 {
   string cmd = "rmdir " + dname + endline;
-  network_command(cmd);
+  network_command(cmd, false);
   // to implement
 }
 
@@ -135,49 +135,49 @@ void Shell::rmdir_rpc(string dname)
 void Shell::ls_rpc()
 {
   string cmd = "ls " + endline;
-  network_command(cmd);
+  network_command(cmd, false);
 }
 
 // Remote procedure call on create
 void Shell::create_rpc(string fname)
 {
   string cmd = "create " + fname + endline;
-  network_command(cmd);
+  network_command(cmd, false);
 }
 
 // Remote procedure call on append
 void Shell::append_rpc(string fname, string data)
 {
   string cmd = "append " + fname + " " + data + endline;
-  network_command(cmd);
+  network_command(cmd, false);
 }
 
 // Remote procesure call on cat
 void Shell::cat_rpc(string fname)
 {
   string cmd = "cat " + fname + endline;
-  network_command(cmd);
+  network_command(cmd, true);
 }
 
 // Remote procedure call on head
 void Shell::head_rpc(string fname, int n)
 {
   string cmd = "head " + fname + " " + to_string(n) + endline;
-  network_command(cmd);
+  network_command(cmd, true);
 }
 
 // Remote procedure call on rm
 void Shell::rm_rpc(string fname)
 {
   string cmd = "rm " + fname + endline;
-  network_command(cmd);
+  network_command(cmd, false);
 }
 
 // Remote procedure call on stat
 void Shell::stat_rpc(string fname)
 {
   string cmd = "stat " + fname + endline;
-  network_command(cmd);
+  network_command(cmd, false);
 }
 
 // Executes the shell until the user quits.
@@ -310,7 +310,7 @@ bool Shell::execute_command(string command_str)
   return false;
 }
 
-void Shell::network_command(string message)
+void Shell::network_command(string message, bool can_be_empty)
 {
   // Format message for network transit
   string formatted_mesage = message + endline;
@@ -340,6 +340,10 @@ void Shell::network_command(string message)
   if (body.length() == 0 && (code != "200 OK"))
   {
     output = code;
+  }
+  else if (body.length() == 0 && (code == "200 OK") && !can_be_empty)
+  {
+    output = "success";
   }
 
   cout << output << endl;

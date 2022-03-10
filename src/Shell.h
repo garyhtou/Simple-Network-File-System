@@ -88,7 +88,7 @@ private:
   void stat_rpc(string fname);
 
 private:
-  void network_command(string message);
+  void network_command(string message, bool can_be_empty);
 };
 
 #endif
