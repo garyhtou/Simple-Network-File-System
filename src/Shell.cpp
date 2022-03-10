@@ -343,6 +343,8 @@ void Shell::network_command(string message, bool can_be_empty)
   }
   else if (body.length() == 0 && (code == "200 OK") && !can_be_empty)
   {
+    // Some servers rely on the client to display "success" rather than sending
+    // it through the socket. This handles that case
     output = "success";
   }
 
