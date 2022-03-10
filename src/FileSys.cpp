@@ -506,7 +506,7 @@ void FileSys::stat(const char *name)
       message.append("Directory name: ");
       message.append(dir_name + '\n');
       message.append("Directory block: ");
-      message.append(to_string(dir.get_id()) + '\n');
+      message.append(to_string(dir.get_id()));
       response_ok(message);
       return;
     }
