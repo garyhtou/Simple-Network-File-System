@@ -318,7 +318,7 @@ void Shell::network_command(string message)
   // Send command over the network (through the provided socket)
   send_message(this->cs_sock, formatted_mesage);
 
-  recv_msg_t msg = recv_message(this->cs_sock);
+  recv_msg_t msg = recv_message_client(this->cs_sock);
   if (msg.quit)
   {
     cout << "Server has closed the connection" << endl;

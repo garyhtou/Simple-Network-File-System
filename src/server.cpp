@@ -49,7 +49,7 @@ struct recv_msg_t
     string message;
     bool quit;
 };
-extern recv_msg_t recv_message(int sock_fd);
+extern recv_msg_t recv_message_server(int sock_fd);
 
 int main(int argc, char *argv[])
 {
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
                 try
                 {
                     // Receive the message
-                    msg = recv_message(new_sockfd);
+                    msg = recv_message_server(new_sockfd);
                     if (msg.quit)
                     {
                         cout << "Client has closed the connection" << endl;

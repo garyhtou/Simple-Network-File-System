@@ -25,30 +25,24 @@ string format_response(string code, string message)
 
 // takes a file descriptor for the socket and a string and sends the string
 // over the socket
-// code from socket_prog.pptx Author: Dr. Zhu
 void send_message(int sock_fd, string message)
 {
-	// TODO: LOOP
-	const char *msg = message.c_str();
-	// char *p = (char *)&msg;
+	const char *msg_ptr = message.c_str();
+	int msg_size = message.size();
+	int bytes_sent;
 
-	// int bytes_sent = 0;
-	// while (bytes_sent < sizeof(msg))
-	//{
-	// cout << "currently sending: " << *msg << endl;
-	// int x = send(sock_fd, (void *)p, sizeof(msg) - bytes_sent, 0);
-	int x = send(sock_fd, msg, strlen(msg), 0);
-	// cout << "sent " << x << " bytes" << endl;
-	if (x == -1 || x == 0)
+	while (msg_size > 0)
 	{
-		perror("Error while sending message over socket");
-		close(sock_fd);
-		exit(1);
-	}
+		bytes_sent = send(sock_fd, msg_ptr, msg_size, 0);
+		if (bytes_sent < 0)
+		{
+			perror("Error sending message");
+			return;
+		}
 
-	// p += x;
-	// bytes_sent += x;
-	//}
+		msg_ptr += bytes_sent;
+		msg_size -= bytes_sent;
+	}
 }
 
 struct recv_msg_t
@@ -57,28 +51,127 @@ struct recv_msg_t
 	bool quit;
 };
 
-recv_msg_t recv_message(int sock_fd)
+recv_msg_t recv_message_client(int sock_fd)
 {
-	// TODO: LOOP
-	string message;
-	int ret;
-	// while (true)
-	//{
-	char temp_buff[65535] = {}; // max packet size
-	ret = recv(sock_fd, temp_buff, sizeof(temp_buff), 0);
-	if (ret == -1)
+	recv_msg_t msg;
+	msg.quit = false;
+	char temp_buff[150] = {};
+
+	int size;
+	while (true)
 	{
-		perror("Error while receving message from socket");
-		close(sock_fd);
-		exit(1);
+		size = recv(sock_fd, temp_buff, sizeof(temp_buff), 0);
+		if (size > 0)
+		{
+			// New data. Copy into message string.
+			for (int i = 0; i < size; i++)
+			{
+				msg.message += temp_buff[i];
+			}
+			// Check if we've recieved the full message
+
+			// Start by identifying the length of the message body
+			size_t lenPos = msg.message.find("Length:");
+			if (lenPos == string::npos)
+			{
+				continue;
+			}
+			size_t lenEndPos = msg.message.find("\r\n", lenPos + 1);
+			if (lenEndPos == string::npos)
+			{
+				continue;
+			}
+
+			string lengthStr = msg.message.substr(lenPos + 7, lenEndPos);
+			int length = -1;
+			try
+			{
+				length = stoi(lengthStr);
+			}
+			catch (...)
+			{
+				// Failed to parse length
+				break;
+			}
+
+			// Move past the who sets of "\r\n" after the length
+			size_t bodyPos = msg.message.find("\r\n", lenEndPos + 1);
+			if (bodyPos == string::npos)
+			{
+				continue;
+			}
+
+			string body = msg.message.substr(bodyPos, msg.message.length());
+			if (body.length() < length)
+			{
+				// We're still missing a portion of the message body
+				continue;
+			}
+
+			// We've got the full message
+			break;
+		}
+
+		else if (size == 0)
+		{
+			// The socket as closed on the other end
+			msg.quit = true;
+			break;
+		}
+		else
+		{
+			// An error has occured (size < 0)
+			perror("Error while receving message from socket");
+			close(sock_fd);
+			return msg;
+		}
 	}
 
-	message += temp_buff;
-	//}
+	// cout << "\tdone" << endl;
+	return msg;
+}
 
+recv_msg_t recv_message_server(int sock_fd)
+{
 	recv_msg_t msg;
-	msg.message = message;
-	msg.quit = ret == 0;
+	msg.quit = false;
+	char temp_buff[150] = {};
+
+	int size;
+	while (true)
+	{
+		size = recv(sock_fd, temp_buff, sizeof(temp_buff), 0);
+		if (size > 0)
+		{
+			for (int i = 0; i < size; i++)
+			{
+				msg.message += temp_buff[i];
+			}
+			// Start by identifying the length of the message body
+			size_t endPos = msg.message.find("\r\n");
+			if (endPos == string::npos)
+			{
+				// Still missing the full message
+				continue;
+			}
+
+			// We've got the full message
+			break;
+		}
+		else if (size == 0)
+		{
+			// The socket as closed on the other end
+			msg.quit = true;
+			break;
+		}
+		else
+		{
+			// An error has occured (size < 0)
+			perror("Error while receving message from socket");
+			close(sock_fd);
+			return msg;
+		}
+	}
 
 	return msg;
 }
