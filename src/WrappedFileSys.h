@@ -1,4 +1,5 @@
-// and functions provided by `blocks.h` and `BasicFileSys`.
+// WrappedFileSys contains class wrappers for the structs and functions provided
+// by `blocks.h` and `BasicFileSys`.
 //
 // The goal is to provide an object oriented interface to the underlying
 // C-like architecture. Wrapped File System will also handle error checking
