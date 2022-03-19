@@ -9,7 +9,8 @@ and **Datablocks**. The client and server communicate over a **persistent TCP
 connection**.
 
 ### Support commands
-- `ls`:	List the contents of the current directory
+
+- `ls`: List the contents of the current directory
 - `cd <directory>`: Change to a specified directory
 - `home`: Switch to the home (root) directory (similar to `cd /` in Unix)
 - `rmdir <directory>`: Remove a directory. The directory must be empty
@@ -25,13 +26,15 @@ connection**.
 ## Meet the team
 
 **Gary Tou** ([@garyhtou](https://github.com/garyhtou))
+
 - Creating and connecting TCP socket (Shell)
 - Executing commands (Shell)
 - home, append, rm (FileSys)
 - Receiving messages for Client (Helper)
-- Object Orientated wrapped classes for the BasicFileSys (WrappedFileSys)
+- Object Orientated wrapped classes for the BasicFileSys ([WrappedFileSys](/src/WrappedFileSys.h))
 
 **Harry Rudolph** ([@hankrud](https://github.com/HankRud))
+
 - Parsing the command line (Shell)
 - Formatting and outputting command messages (Shell)
 - mkdir, cd, stat, rmdir in (FileSys)
@@ -39,6 +42,7 @@ connection**.
 - Message formatting
 
 **Castel Villalobos** ([@impropernoun](https://github.com/impropernoun))
+
 - Remote procedure call commands (Shell)
 - ls, create, head, cat (FileSys)
 - Parsing and executing (server)
