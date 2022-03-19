@@ -24,21 +24,21 @@ connection**.
 
 ## Meet the team
 
-**Team member #1: Gary Tou** ([@garyhtou](https://github.com/garyhtou))
+**Gary Tou** ([@garyhtou](https://github.com/garyhtou))
 - Creating and connecting TCP socket (Shell)
 - Executing commands (Shell)
 - home, append, rm (FileSys)
 - Receiving messages for Client (Helper)
 - Object Orientated wrapped classes for the BasicFileSys (WrappedFileSys)
 
-**Team member #2: Harry Rudolph** ([@hankrud](https://github.com/HankRud))
+**Harry Rudolph** ([@hankrud](https://github.com/HankRud))
 - Parsing the command line (Shell)
 - Formatting and outputting command messages (Shell)
 - mkdir, cd, stat, rmdir in (FileSys)
 - Receiving messages for Server (Helper)
 - Message formatting
 
-**Team member #3: Castel Villalobos** ([@impropernoun](https://github.com/impropernoun))
+**Castel Villalobos** ([@impropernoun](https://github.com/impropernoun))
 - Remote procedure call commands (Shell)
 - ls, create, head, cat (FileSys)
 - Parsing and executing (server)
