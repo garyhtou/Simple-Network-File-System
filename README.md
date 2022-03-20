@@ -21,7 +21,7 @@ connection**.
 - `head <filename> <n>`: Display the first `n` bytes of the file
 - `rm <filename>`: Remove a file
 
-<sub>More information can be found [here](/assignment/Project4_NFS.pdf.pdf).</sub>
+<sub>More information can be found [here](/assignment/Project4_NFS.pdf).</sub>
 
 ## Meet the team
 
