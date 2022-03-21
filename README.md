@@ -8,7 +8,7 @@ disk featuring an **indexed block allocation** approach. The disk includes a
 and **Datablocks**. The client and server communicate over a **persistent TCP
 connection**.
 
-### Support commands
+### Supported commands
 
 - `ls`: List the contents of the current directory
 - `cd <directory>`: Change to a specified directory
@@ -23,7 +23,7 @@ connection**.
 
 <sub>More information can be found [here](/assignment/Project4_NFS.pdf).</sub>
 
-## Meet the team
+## Meet The Team
 
 **Gary Tou** ([@garyhtou](https://github.com/garyhtou))
 
